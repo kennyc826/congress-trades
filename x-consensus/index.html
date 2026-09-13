@@ -13,7 +13,7 @@
   --muted:#898781; --line:#e1e0d9; --border:rgba(11,11,11,.10);
   --bull:#006300; --bear:#d03b3b; --neu:#9a9890; --accent:#2a78d6;
   --chip:rgba(11,11,11,.05); --chip-on:#0b0b0b; --chip-on-ink:#fcfcfb;
-  --bull-soft:rgba(0,99,0,.10); --bear-soft:rgba(208,59,59,.10);
+  --bull-soft:rgba(0,99,0,.09); --bear-soft:rgba(208,59,59,.09);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -22,7 +22,7 @@
     --muted:#898781; --line:#2c2c2a; --border:rgba(255,255,255,.10);
     --bull:#0ca30c; --bear:#e0544f; --neu:#6f6e68; --accent:#3987e5;
     --chip:rgba(255,255,255,.07); --chip-on:#fff; --chip-on-ink:#1a1a19;
-    --bull-soft:rgba(12,163,12,.16); --bear-soft:rgba(224,84,79,.16);
+    --bull-soft:rgba(12,163,12,.15); --bear-soft:rgba(224,84,79,.15);
   }
 }
 :root[data-theme="dark"] {
@@ -31,338 +31,463 @@
   --muted:#898781; --line:#2c2c2a; --border:rgba(255,255,255,.10);
   --bull:#0ca30c; --bear:#e0544f; --neu:#6f6e68; --accent:#3987e5;
   --chip:rgba(255,255,255,.07); --chip-on:#fff; --chip-on-ink:#1a1a19;
-  --bull-soft:rgba(12,163,12,.16); --bear-soft:rgba(224,84,79,.16);
+  --bull-soft:rgba(12,163,12,.15); --bear-soft:rgba(224,84,79,.15);
 }
 * { box-sizing:border-box; }
 body { margin:0; padding:24px 18px 64px; background:var(--page); color:var(--ink);
-  font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;
-  font-size:14px; line-height:1.5; }
-.wrap { max-width:1120px; margin:0 auto; }
-header { display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 20px; margin-bottom:6px; }
-h1 { font-size:20px; margin:0; font-weight:650; letter-spacing:-.01em; }
+  font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif; font-size:14px; line-height:1.5; }
+.wrap { max-width:1140px; margin:0 auto; }
+header { display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 20px; }
+h1 { font-size:21px; margin:0; font-weight:650; letter-spacing:-.01em; }
 .stamp { color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
-h2 { font-size:15px; margin:34px 0 10px; font-weight:620; scroll-margin-top:12px; text-wrap:balance; }
-h2 .n { color:var(--muted); font-weight:400; font-size:13px; margin-left:6px; }
-.note { color:var(--muted); font-size:12.5px; margin:-4px 2px 10px; max-width:70ch; }
-.seg { display:inline-flex; background:var(--chip); border:1px solid var(--border);
-  border-radius:9px; padding:3px; gap:2px; margin-left:auto; }
+h2 { font-size:15px; margin:32px 0 10px; font-weight:620; scroll-margin-top:12px; text-wrap:balance;
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
+h2 .n { color:var(--muted); font-weight:400; font-size:12.5px; }
+h3 { font-size:13px; margin:0; font-weight:620; }
+.seg { display:inline-flex; background:var(--chip); border:1px solid var(--border); border-radius:9px; padding:3px; gap:2px; }
 .seg button { font:inherit; font-size:13px; border:0; background:transparent; color:var(--ink-2);
-  padding:5px 12px; border-radius:6px; cursor:pointer; font-variant-numeric:tabular-nums; }
+  padding:5px 12px; border-radius:6px; cursor:pointer; white-space:nowrap; }
 .seg button[aria-pressed="true"] { background:var(--chip-on); color:var(--chip-on-ink); font-weight:600; }
-button:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
-  outline:2px solid var(--accent); outline-offset:2px; }
-.cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 4px; }
-.card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
-.card .k { color:var(--muted); font-size:12px; }
-.card .v { font-size:22px; font-weight:640; font-variant-numeric:tabular-nums; letter-spacing:-.02em; margin-top:2px; }
-nav.toc { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 0; }
-nav.toc a { font-size:12.5px; text-decoration:none; background:var(--chip);
-  border:1px solid var(--border); border-radius:999px; padding:3px 10px; color:var(--ink-2); }
-.scroll { overflow-x:auto; -webkit-overflow-scrolling:touch;
-  border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+header .seg { margin-left:auto; }
+button:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.grid { display:grid; gap:10px; }
+.g4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.g3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.box { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; min-width:0; }
+.stat .k { color:var(--muted); font-size:12px; }
+.stat .v { font-size:22px; font-weight:640; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+.acc-h { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+.acc-h a { color:var(--ink); font-weight:640; text-decoration:none; }
+.acc-h .h { color:var(--muted); font-size:12px; }
+.badge { font-size:11px; padding:1px 7px; border-radius:999px; border:1px solid var(--border); color:var(--ink-2); white-space:nowrap; }
+.badge.news { color:var(--accent); } .badge.disclosure { color:var(--ink); background:var(--chip); }
+.desc { color:var(--muted); font-size:12px; margin:3px 0 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.row { display:flex; flex-wrap:wrap; gap:5px; align-items:center; margin-top:5px; font-size:12.5px; }
+.row .lab { font-weight:620; min-width:36px; }
+.lab.bull { color:var(--bull); } .lab.bear { color:var(--bear); } .lab.neu { color:var(--muted); }
+.tk { font:inherit; font-size:12px; font-weight:640; font-variant-numeric:tabular-nums; padding:1px 7px; border-radius:6px;
+  border:1px solid var(--border); background:var(--chip); color:var(--ink); cursor:pointer; }
+.tk.bull { background:var(--bull-soft); color:var(--bull); border-color:transparent; }
+.tk.bear { background:var(--bear-soft); color:var(--bear); border-color:transparent; }
+.tk:hover { border-color:var(--ink-2); }
+.muted { color:var(--muted); }
+.up { color:var(--bull); } .down { color:var(--bear); }
+.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.analysis { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.analysis p { margin:0; max-width:75ch; font-size:14px; }
+.vc-h { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px; }
+.vc-h .big { font-size:18px; font-weight:680; background:none; border:0; padding:0; cursor:pointer; color:var(--ink); font-variant-numeric:tabular-nums; }
+.vc-h .big:hover { text-decoration:underline; }
+.vc ul { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.vc li { display:grid; grid-template-columns:auto 1fr auto; gap:8px; font-size:12.5px; align-items:baseline; }
+.vc li .who { font-weight:600; white-space:nowrap; }
+.vc li .why { color:var(--ink-2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.vc li a, .tl a, td.why a { color:var(--muted); font-size:12px; white-space:nowrap; }
+.vc.bull { border-color:color-mix(in srgb, var(--bull) 30%, var(--border)); }
+.vc.bear { border-color:color-mix(in srgb, var(--bear) 30%, var(--border)); }
+.dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:3px; }
+.dot.bull { background:var(--bull); } .dot.bear { background:var(--bear); } .dot.neutral { background:var(--neu); }
+.scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
 table { width:100%; border-collapse:collapse; font-size:13px; }
 th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:middle; }
 th { color:var(--muted); font-weight:560; font-size:12px; white-space:nowrap; }
+th button { font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; }
+th button[aria-sort] { color:var(--ink); }
 tr:last-child td { border-bottom:0; }
-td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
-.tick { font-weight:650; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.muted { color:var(--muted); }
-.pill { display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:999px;
-  white-space:nowrap; border:1px solid transparent; }
-.pill.bull { color:var(--bull); background:var(--bull-soft); }
-.pill.bear { color:var(--bear); background:var(--bear-soft); }
-.pill.split { color:var(--ink); background:var(--chip); border-color:var(--border); }
-.pill.neu { color:var(--muted); background:var(--chip); }
-.bar { display:flex; height:8px; width:120px; border-radius:4px; overflow:hidden; background:var(--chip); }
+td.why { min-width:260px; color:var(--ink-2); font-size:12.5px; }
+.split { display:grid; gap:3px; min-width:170px; }
+.bar { display:flex; height:8px; border-radius:4px; overflow:hidden; background:var(--chip); }
 .bar i { display:block; height:100%; }
-.bar .b { background:var(--bull); } .bar .n { background:var(--neu); } .bar .r { background:var(--bear); }
-.barwrap { display:flex; align-items:center; gap:8px; white-space:nowrap; font-variant-numeric:tabular-nums; font-size:12px; }
-.who { color:var(--ink-2); font-size:12.5px; min-width:180px; }
-.link-btn { font:inherit; font-size:12.5px; background:none; border:1px solid var(--border); color:var(--ink-2);
-  border-radius:6px; padding:2px 8px; cursor:pointer; white-space:nowrap; }
-.link-btn:hover { background:var(--chip); }
-.cong { font-size:12px; white-space:nowrap; font-variant-numeric:tabular-nums; }
-.cong .b { color:var(--bull); font-weight:600; } .cong .s { color:var(--bear); font-weight:600; }
-.changes { display:grid; gap:8px; }
-.chg { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; background:var(--surface);
-  border:1px solid var(--border); border-radius:10px; padding:10px 14px; align-items:baseline; }
-.chg .kind { font-size:12px; font-weight:650; white-space:nowrap; }
+.bar .b { background:var(--bull); } .bar .n { background:var(--neu); } .bar .r { background:var(--bear); } .bar .x { background:var(--line); }
+.split .lbl { display:flex; justify-content:space-between; gap:6px; font-size:11.5px; font-variant-numeric:tabular-nums; }
+.pill { display:inline-block; font-size:11.5px; font-weight:620; padding:1px 8px; border-radius:999px; white-space:nowrap; }
+.pill.bull { color:var(--bull); background:var(--bull-soft); } .pill.bear { color:var(--bear); background:var(--bear-soft); }
+.pill.neu { color:var(--muted); background:var(--chip); }
+.chg { display:grid; grid-template-columns:64px 1fr; gap:2px 12px; padding:9px 0; border-top:1px solid var(--line); font-size:13px; }
+.chg:first-child { border-top:0; }
+.chg .kind { font-size:12px; font-weight:650; }
 .chg .kind.up { color:var(--bull); } .chg .kind.down { color:var(--bear); } .chg .kind.flip { color:var(--accent); }
-.chg .line { font-size:13.5px; }
 .chg .sub { grid-column:2; color:var(--muted); font-size:12.5px; }
-.drill { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
-.drill-top { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:12px; }
-select { font:inherit; font-size:14px; padding:5px 8px; border-radius:7px; border:1px solid var(--border);
-  background:var(--page); color:var(--ink); }
-.timeline { list-style:none; margin:0; padding:0; display:grid; gap:0; }
-.timeline li { display:grid; grid-template-columns:92px 132px 1fr; gap:10px; padding:9px 0;
-  border-top:1px solid var(--line); align-items:baseline; }
-.timeline li:first-child { border-top:0; }
-.timeline .d { color:var(--muted); font-size:12.5px; font-variant-numeric:tabular-nums; }
-.timeline .h { font-size:13px; font-weight:600; }
-.timeline .s { font-size:13.5px; max-width:70ch; }
-.timeline a { color:var(--muted); font-size:12px; margin-left:6px; }
-.accts { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
-.acct { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
-.acct-h { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
-.acct-h a { font-weight:640; color:var(--ink); text-decoration:none; }
-.acct-h .muted { font-size:12px; white-space:nowrap; }
-.acct .desc { color:var(--muted); font-size:12px; margin:1px 0 8px; }
-.acct ul { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
-.acct li { font-size:12.5px; display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:baseline; }
-.acct .empty { color:var(--muted); font-size:12.5px; }
-.ask { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+#drill { scroll-margin-top:10px; }
+.drill-h { display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; }
+.drill-h .t { font-size:24px; font-weight:700; letter-spacing:-.01em; }
+.drill-h .px { font-size:13.5px; font-variant-numeric:tabular-nums; }
+.chart svg { display:block; width:100%; height:auto; }
+.chart text { fill:var(--muted); font-size:11px; font-family:inherit; }
+.stance-groups { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:12.5px; align-items:center; }
+.stance-groups .g { display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
+.chipn { font-size:12px; padding:1px 7px; border-radius:999px; background:var(--chip); border:1px solid var(--border); }
+.tl { list-style:none; margin:0; padding:0; }
+.tl li { display:grid; grid-template-columns:70px 120px 1fr; gap:10px; padding:8px 0; border-top:1px solid var(--line); font-size:13px; align-items:baseline; }
+.tl li:first-child { border-top:0; }
 .ask textarea { width:100%; min-height:64px; font:inherit; font-size:14px; padding:9px 11px; border-radius:8px;
   border:1px solid var(--border); background:var(--page); color:var(--ink); resize:vertical; }
-.ask .row { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; align-items:center; }
-.ask .row button { font:inherit; font-size:13px; padding:6px 14px; border-radius:7px; cursor:pointer;
-  border:1px solid var(--border); background:var(--chip); color:var(--ink); }
-.ask .row button.primary { background:var(--chip-on); color:var(--chip-on-ink); border-color:transparent; font-weight:600; }
-.ask .row button:disabled { opacity:.5; cursor:default; }
-.ask .sugg { font-size:12.5px; }
+.ask .acts { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; align-items:center; }
+.ask .acts button { font:inherit; font-size:13px; padding:6px 14px; border-radius:7px; cursor:pointer; border:1px solid var(--border); background:var(--chip); color:var(--ink); }
+.ask .acts button.primary { background:var(--chip-on); color:var(--chip-on-ink); border-color:transparent; font-weight:600; }
+.ask .acts button:disabled { opacity:.5; cursor:default; }
 .ask .out { white-space:pre-wrap; margin-top:12px; font-size:14px; max-width:75ch; }
 .ask .out:empty { display:none; }
-.empty { color:var(--muted); padding:12px 2px; }
+.empty { color:var(--muted); font-size:13px; padding:6px 2px; margin:0; }
 footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; }
-footer p { max-width:80ch; margin:6px 0; }
-footer strong { color:var(--ink-2); }
-@media (max-width:620px) {
-  .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .timeline li { grid-template-columns:1fr; gap:2px; }
-  .seg { margin-left:0; }
-}
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto !important; } }
+footer p { max-width:80ch; margin:6px 0; } footer strong { color:var(--ink-2); }
+@media (max-width:900px) { .g4, .g3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px) { .g3 { grid-template-columns:1fr; } header .seg { margin-left:0; } .tl li { grid-template-columns:1fr; gap:2px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div>
-    <h1>X 交易員共識</h1>
-    <div class="stamp" id="stamp"></div>
-  </div>
-  <div class="seg" role="group" aria-label="時間範圍" id="seg"></div>
+  <div><h1>X 交易員共識</h1><div class="stamp" id="stamp"></div></div>
+  <div class="seg" role="group" aria-label="視圖" id="views"></div>
 </header>
-<div class="cards" id="cards"></div>
-<nav class="toc">
-  <a href="#board">共識榜</a><a href="#changes">立場變化</a><a href="#drill">個股追查</a>
-  <a href="#accounts">帳號</a><a href="#ask" id="toc-ask" hidden>問 AI</a>
-</nav>
+<main id="view"></main>
 
-<h2 id="board">共識榜<span class="n" id="board-n"></span></h2>
-<p class="note">每個帳號只計窗口內對該股嘅<strong>最新</strong>立場。排序：有表態（睇好或睇淡）嘅帳號數優先。
-「國會申報」係近 90 日議員申報買入／賣出筆數。</p>
-<div id="board-body"></div>
-
-<h2 id="changes">立場變化<span class="n" id="changes-n"></span></h2>
-<p class="note">同一個帳號對同一隻股，同佢上一次講法比較。</p>
-<div id="changes-body"></div>
-
-<h2 id="drill">個股追查</h2>
-<div class="drill">
-  <div class="drill-top">
-    <label>股票 <select id="drill-sel"></select></label>
-    <span id="drill-sum"></span>
-  </div>
-  <ul class="timeline" id="drill-body"></ul>
-</div>
-
-<h2 id="accounts">帳號<span class="n">追蹤緊嘅 10 個</span></h2>
-<div class="accts" id="accts"></div>
+<section id="drill"></section>
 
 <section id="ask-sec" hidden>
-  <h2 id="ask">問 AI<span class="n">根據本頁資料作答</span></h2>
-  <div class="ask">
-    <textarea id="ask-q" placeholder="例如：邊隻股最多人睇好？佢哋嘅理由係乜？"></textarea>
-    <div class="row">
+  <h2 id="ask">問 AI<span class="n">只根據本頁資料答</span></h2>
+  <div class="box ask">
+    <textarea id="ask-q" placeholder="例如：Serenity 點睇 ORCL？呢幾個帳號對 NVDA 有乜分歧？"></textarea>
+    <div class="acts">
       <button class="primary" id="ask-go">問</button>
       <button id="ask-stop" hidden>停止</button>
-      <span class="muted sugg">試下：</span>
-      <button class="link-btn" data-q="總結今期最一致嘅觀點同最大分歧">總結共識同分歧</button>
-      <button class="link-btn" data-q="有冇帳號改變咗立場？分別係點改？">邊個轉咗軚</button>
+      <span class="muted" style="font-size:12.5px">試下：</span>
+      <button data-q="邊隻股有最明確嘅共識？各人理由係乜？">最明確共識</button>
+      <button data-q="邊隻股分歧最大？睇好同睇淡嘅理由分別係乜？">最大分歧</button>
+      <button data-q="最近有冇帳號改變咗立場？">邊個轉咗軚</button>
     </div>
     <div class="out" id="ask-out" aria-live="polite"></div>
   </div>
 </section>
 
 <footer>
-  <p><strong>點計</strong>：由 Claude 閱讀 10 個公開 X 帳號嘅原創帖文（唔計轉推），逐條判斷對個股係睇好、睇淡定中性，
-     強度 1–3。摘要係意譯，唔係原文；撳「帖文」睇原句。訂閱者專屬帖文只睇到開頭。</p>
-  <p><strong>要留意</strong>：帳號講乜唔等於佢有落注；「一致睇好」只代表呢幾個人講法一致，唔代表會升。
-     揀邊 10 個帳號本身已經有偏向。</p>
+  <p><strong>點計</strong>：Claude 閱讀追蹤帳號嘅原創帖文（唔計轉推），逐條判斷對個股係睇好、睇淡定中性，強度 1–3。
+     理由係意譯，唔係原文；撳「原帖」睇原句。冇提過嘅帳號唔會當中性計。</p>
+  <p><strong>要留意</strong>：分類由 AI 推斷，可能判錯；帳號講乜唔等於有落注；提及次數同共識程度唔預測未來回報。</p>
   <p><strong>免責</strong>：公開資訊整理，唔係投資建議。</p>
 </footer>
 </div>
-<script type="application/json" id="data">{"generated": "2026-09-13T21:15:34Z", "windows": [1, 7, 30], "accounts": [{"handle": "aleabitoreddit", "name": "Serenity", "note": "AI／半導體供應鏈研究"}, {"handle": "Beth_Kindig", "name": "Beth Kindig", "note": "I/O Fund 科技股分析"}, {"handle": "StockSavvyShay", "name": "Shay Boloor", "note": "Futurum Equities 首席策略師"}, {"handle": "amitisinvesting", "name": "amit", "note": "科技成長股"}, {"handle": "CathieDWood", "name": "Cathie Wood", "note": "ARK Invest 創辦人"}, {"handle": "7LukeHallard", "name": "Luke Hallard", "note": "投資人、Podcast 主持"}, {"handle": "IvanaSpear", "name": "Ivana Spear", "note": "Spear Alpha ETF 基金經理"}, {"handle": "fundstrat", "name": "Tom Lee", "note": "Fundstrat 策略師"}, {"handle": "markminervini", "name": "Mark Minervini", "note": "動能交易"}, {"handle": "alphatrends", "name": "Brian Shannon", "note": "技術分析"}], "checked": {"aleabitoreddit": "2026-09-13T20:57:00Z", "Beth_Kindig": "2026-09-13T21:00:00Z", "StockSavvyShay": "2026-09-13T21:30:00Z", "amitisinvesting": "2026-09-13T21:35:00Z", "CathieDWood": "2026-09-13T21:36:00Z", "7LukeHallard": "2026-09-13T21:40:00Z", "IvanaSpear": "2026-09-13T21:41:00Z", "fundstrat": "2026-09-13T21:02:00Z", "markminervini": "2026-09-13T21:03:00Z", "alphatrends": "2026-09-13T21:10:00Z"}, "opinions": [{"id": "2097407631442719101", "handle": "Beth_Kindig", "time": "2026-09-08T19:32Z", "ticker": "DELL", "stance": "neutral", "strength": 1, "summary": "引述 Dell：DRAM、NAND 持續短缺，供應鏈處處受限"}, {"id": "2097711607807651950", "handle": "Beth_Kindig", "time": "2026-09-09T15:39Z", "ticker": "NVDA", "stance": "bull", "strength": 2, "summary": "預測 2027 年 NVL72 機櫃產值超過 7,100 億美元，按年升 214%"}, {"id": "2098074456312660169", "handle": "Beth_Kindig", "time": "2026-09-10T15:41Z", "ticker": "TSM", "stance": "bull", "strength": 2, "summary": "8 月收入創新高，按年升 53%，AI 需求強勁"}, {"id": "2098151630801662460", "handle": "Beth_Kindig", "time": "2026-09-10T20:48Z", "ticker": "NVDA", "stance": "bull", "strength": 2, "summary": "Vera Rubin 每 MW 吞吐量係 Blackwell Ultra 50 倍，客戶願意畀更高價"}, {"id": "2098151787962253470", "handle": "Beth_Kindig", "time": "2026-09-10T20:49Z", "ticker": "CRWD", "stance": "bull", "strength": 1, "summary": "AI 引發嘅資料外洩平均成本高兩成，網絡安全需求上升"}, {"id": "2098255098862264725", "handle": "amitisinvesting", "time": "2026-09-11T03:39Z", "ticker": "PLTR", "stance": "bull", "strength": 1, "summary": "NVDA 同 PLTR 擴大 AI 合作"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "AMD", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold（Situational Awareness）買入 AMD 期權，指期權 IV 偏高"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "BE", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 BE 期權"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "CRWV", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 CRWV 期權"}, {"id": "2098446675086110936", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "MU", "stance": "bull", "strength": 2, "summary": "MU 前瞻市盈率 7 倍但毛利率係 Dell 三倍，質疑市場點解咁悲觀"}, {"id": "2098446675086110936", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "DELL", "stance": "neutral", "strength": 1, "summary": "拎 DELL 18 倍前瞻市盈率同 MU 比較"}, {"id": "2098446691427119373", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "SNDK", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 大手買入 SNDK 等期權"}, {"id": "2098456703930913193", "handle": "IvanaSpear", "time": "2026-09-11T17:00Z", "ticker": "AVGO", "stance": "bull", "strength": 1, "summary": "引述 Hock Tan：閉源前沿模型經濟上可持續，AVGO 押注呢邊"}, {"id": "2098483825802358947", "handle": "StockSavvyShay", "time": "2026-09-11T18:48Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "Tesla Semi 正式進軍歐洲"}, {"id": "2098485857800057311", "handle": "amitisinvesting", "time": "2026-09-11T18:56Z", "ticker": "PLTR", "stance": "bull", "strength": 3, "summary": "AIPCon 之後機構全面看好，目標價上調至 225–250 美元"}, {"id": "2098624139225657431", "handle": "CathieDWood", "time": "2026-09-12T04:05Z", "ticker": "META", "stance": "bull", "strength": 1, "summary": "推介 META 嘅 Muse 可以幫人搵返無人認領嘅錢"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "CEG", "stance": "bull", "strength": 2, "summary": "月度調倉：新開 CEG 試單倉位"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "SPCX", "stance": "bull", "strength": 2, "summary": "繼續加碼 SpaceX 相關持倉"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "NDIA", "stance": "bear", "strength": 2, "summary": "月度調倉：沽清印度 ETF"}, {"id": "2098760153030086832", "handle": "StockSavvyShay", "time": "2026-09-12T13:06Z", "ticker": "TSLA", "stance": "bull", "strength": 2, "summary": "自稱 TSLA 同 SPCX 嘅「超級粉絲」"}, {"id": "2098760153030086832", "handle": "StockSavvyShay", "time": "2026-09-12T13:06Z", "ticker": "SPCX", "stance": "bull", "strength": 2, "summary": "自稱 SPCX 超級粉絲，但指兩間公司合計盈利偏低"}, {"id": "2098766987874959428", "handle": "StockSavvyShay", "time": "2026-09-12T13:33Z", "ticker": "MU", "stance": "bull", "strength": 1, "summary": "HBM 用量圖表睇落利淡 MU，但認為要睇 Nvidia 背後原因，唔一定係壞事"}, {"id": "2098773005291934163", "handle": "StockSavvyShay", "time": "2026-09-12T13:57Z", "ticker": "CRWV", "stance": "bull", "strength": 1, "summary": "列入 AI 雲十大名單：同 Nvidia 深度整合"}, {"id": "2098773005291934163", "handle": "StockSavvyShay", "time": "2026-09-12T13:57Z", "ticker": "NBIS", "stance": "bull", "strength": 1, "summary": "列入 AI 雲十大名單：自家軟硬件加電力控制"}, {"id": "2098794896375325155", "handle": "StockSavvyShay", "time": "2026-09-12T15:24Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "引述小摩：2035 年 Robotaxi 收入約 3,200 億美元，回報巨大"}, {"id": "2098817448971808810", "handle": "StockSavvyShay", "time": "2026-09-12T16:54Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "Ellison 取消 75 億美元賣股計劃，認為係明智之舉"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "NBIS", "stance": "bull", "strength": 2, "summary": "Oracle 續約 GPU 算力加價 20% 轉售，對 NBIS 呢類 neocloud 係利好"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "IREN", "stance": "bull", "strength": 2, "summary": "同一論點：舊 GPU 仲加價租得出，IREN 受惠"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "話之前睇漏咗 Oracle 業績入面算力續約加價嘅重點"}, {"id": "2099135763766301083", "handle": "StockSavvyShay", "time": "2026-09-13T13:59Z", "ticker": "META", "stance": "bull", "strength": 2, "summary": "Muse 變成「一站式開業工具」，認為係 META 重新估值嘅起點"}, {"id": "2099162181120233820", "handle": "StockSavvyShay", "time": "2026-09-13T15:43Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "引述大摩：無人駕駛令 Tesla Semi 盈利能力可升 6 倍"}, {"id": "2099171287600095478", "handle": "StockSavvyShay", "time": "2026-09-13T16:20Z", "ticker": "TSLA", "stance": "neutral", "strength": 1, "summary": "表示目前冇揸 TSLA，已經換咗倉（全文訂閱限定）"}, {"id": "2099189974901854656", "handle": "Beth_Kindig", "time": "2026-09-13T17:34Z", "ticker": "TSM", "stance": "bull", "strength": 1, "summary": "Q2 十大晶圓代工收入按季升 11.5%，台積電佔 72.5%"}, {"id": "2099194932682486183", "handle": "Beth_Kindig", "time": "2026-09-13T17:54Z", "ticker": "PLTR", "stance": "bull", "strength": 1, "summary": "PLTR 同 NBIS 合作加快為客戶部署算力"}, {"id": "2099194932682486183", "handle": "Beth_Kindig", "time": "2026-09-13T17:54Z", "ticker": "NBIS", "stance": "bull", "strength": 1, "summary": "NBIS 成為 Palantir 首選主權 AI 基建夥伴"}, {"id": "2099238849369211135", "handle": "StockSavvyShay", "time": "2026-09-13T20:48Z", "ticker": "SPCX", "stance": "bull", "strength": 1, "summary": "Falcon 完成第 700 次任務"}], "congress": {"SPCX": {"b": 7, "s": 0, "people": ["Daniel Meuser", "Gilbert Cisneros", "John McGuire", "Maria Elvira Salazar", "William R. Timmons IV"]}, "AVGO": {"b": 4, "s": 0, "people": ["David J. Taylor", "Richard W. Allen"]}, "AMD": {"b": 2, "s": 2, "people": ["Dan Newhouse", "Gilbert Cisneros", "Richard W. Allen"]}, "CRWD": {"b": 2, "s": 0, "people": ["Gilbert Cisneros", "Josh Gottheimer"]}, "NVDA": {"b": 6, "s": 8, "people": ["Cleo Fields", "Cory A Booker", "Dan Newhouse", "Gilbert Cisneros", "John J Mr McGuire III", "Matthew Robert Van Epps", "Michael Rulli", "Sam T. Liccardo", "Sheldon Whitehouse"]}, "PLTR": {"b": 1, "s": 0, "people": ["Gilbert Cisneros"]}, "BE": {"b": 4, "s": 0, "people": ["Nancy Pelosi"]}, "META": {"b": 2, "s": 2, "people": ["Gilbert Cisneros", "Jared Moskowitz", "Matthew Robert Van Epps"]}, "TSLA": {"b": 0, "s": 1, "people": ["Gilbert Cisneros"]}, "CEG": {"b": 0, "s": 1, "people": ["John Boozman"]}, "MU": {"b": 3, "s": 0, "people": ["Dan Newhouse", "Michael Rulli", "Sheldon Whitehouse"]}, "TSM": {"b": 1, "s": 0, "people": ["Cleo Fields"]}}}</script>
+<script type="application/json" id="data">{"generated": "2026-09-13T23:13:43Z", "windows": [1, 7, 28], "accounts": [{"handle": "aleabitoreddit", "name": "Serenity", "type": "opinion", "note": "半導體、光通訊同 AI 供應鏈"}, {"handle": "jukan05", "name": "Jukan", "type": "opinion", "note": "韓國半導體同全球供應鏈"}, {"handle": "octopusycc", "name": "大老师", "type": "opinion", "note": "先進製程、設備同亞洲科技供應鏈"}, {"handle": "KawzInvests", "name": "KawzInvests", "type": "opinion", "note": "AI、科技成長股同行業催化劑"}, {"handle": "michaelsikand", "name": "Michael Sikand", "type": "opinion", "note": "科技平台、AI 產品同初創"}, {"handle": "ren_stocks", "name": "Ren", "type": "opinion", "note": "成長股機會，重視估值風險"}, {"handle": "StockMKTNewz", "name": "Evan", "type": "news", "note": "美股公司新聞同即時催化劑"}, {"handle": "DJTRadar", "name": "DJT Radar", "type": "disclosure", "note": "追蹤同特朗普有關嘅公開交易披露"}, {"handle": "Franktradinglog", "name": "Frank trading", "type": "opinion", "note": "交易日誌"}, {"handle": "asklivermore", "name": "AskLivermore", "type": "opinion", "note": "成長股同組合更新"}, {"handle": "Balder13946731", "name": "Balder", "type": "opinion", "note": "美股同期權策略"}], "checked": {"aleabitoreddit": "2026-09-13T20:57:00Z", "Beth_Kindig": "2026-09-13T21:00:00Z", "StockSavvyShay": "2026-09-13T21:30:00Z", "amitisinvesting": "2026-09-13T21:35:00Z", "CathieDWood": "2026-09-13T21:36:00Z", "7LukeHallard": "2026-09-13T21:40:00Z", "IvanaSpear": "2026-09-13T21:41:00Z", "fundstrat": "2026-09-13T21:02:00Z", "markminervini": "2026-09-13T21:03:00Z", "alphatrends": "2026-09-13T21:10:00Z", "jukan05": "2026-09-13T23:05:00Z", "octopusycc": "2026-09-13T23:06:00Z", "KawzInvests": "2026-09-13T23:08:00Z", "michaelsikand": "2026-09-13T23:09:00Z", "ren_stocks": "2026-09-13T23:12:00Z", "DJTRadar": "2026-09-13T23:13:00Z", "StockMKTNewz": "2026-09-13T23:15:00Z", "Franktradinglog": "2026-09-13T23:16:00Z", "asklivermore": "2026-09-13T23:18:00Z", "Balder13946731": "2026-09-13T23:19:00Z"}, "opinions": [{"id": "2097682814338785723", "handle": "asklivermore", "time": "2026-09-09T13:45Z", "ticker": "AMZN", "stance": "bull", "strength": 3, "summary": "AMZN 回到合理價位，最愛公司之一，認為可以長期年複合增長兩成"}, {"id": "2098002039343120755", "handle": "DJTRadar", "time": "2026-09-10T10:53Z", "ticker": "AON", "stance": "bull", "strength": 1, "summary": "轉發：Aon 董事家族合夥買入約 655 萬美元股票"}, {"id": "2098137811874648179", "handle": "octopusycc", "time": "2026-09-10T19:53Z", "ticker": "ORCL", "stance": "bear", "strength": 2, "summary": "財報前表示判斷偏淡，提醒要控制倉位"}, {"id": "2098137811874648179", "handle": "octopusycc", "time": "2026-09-10T19:53Z", "ticker": "ADBE", "stance": "bear", "strength": 2, "summary": "財報前表示判斷偏淡，但同 ORCL 邏輯唔同"}, {"id": "2098144969794138612", "handle": "octopusycc", "time": "2026-09-10T20:21Z", "ticker": "ADBE", "stance": "neutral", "strength": 1, "summary": "承認財報判斷錯晒，只係盤後短線驗證咗 240 位"}, {"id": "2098170540242698249", "handle": "michaelsikand", "time": "2026-09-10T22:03Z", "ticker": "META", "stance": "bull", "strength": 2, "summary": "Muse 可能令幾十億人第一次用到實用 AI 助理，好利好"}, {"id": "2098191770576417148", "handle": "michaelsikand", "time": "2026-09-10T23:27Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "每週回顧：話 ORCL 呢單交易做啱咗"}, {"id": "2098226430408831362", "handle": "asklivermore", "time": "2026-09-11T01:45Z", "ticker": "SMH", "stance": "neutral", "strength": 1, "summary": "科技股關鍵睇 SMH，要等搵到轉勢低位，現水平只係「還可以」"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "AMD", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold（Situational Awareness）買入 AMD 期權，指期權 IV 偏高"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "BE", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 BE 期權"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "CRWV", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 CRWV 期權"}, {"id": "2098515061384114221", "handle": "michaelsikand", "time": "2026-09-11T20:52Z", "ticker": "SONY", "stance": "bull", "strength": 3, "summary": "認為 SONY 會升穿歷史高位，記憶體短缺反而係好事"}, {"id": "2098522390200263157", "handle": "DJTRadar", "time": "2026-09-11T21:21Z", "ticker": "GFS", "stance": "bull", "strength": 1, "summary": "特朗普政府以 37.85 美元取得 990 萬股 GFS，支持量子晶片"}, {"id": "2098601582019416317", "handle": "ren_stocks", "time": "2026-09-12T02:36Z", "ticker": "SNDK", "stance": "neutral", "strength": 1, "summary": "DeepSeek 對 SSD 需求有啟示，打算週末研究"}, {"id": "2098954569703403766", "handle": "asklivermore", "time": "2026-09-13T01:59Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "自稱 Tesla 股東，啱啱買咗 Model Y"}, {"id": "2099018934293016847", "handle": "jukan05", "time": "2026-09-13T06:14Z", "ticker": "AMD", "stance": "neutral", "strength": 1, "summary": "AMD 超越高通，成為全球第三大無廠半導體公司"}, {"id": "2099032065429869025", "handle": "Balder13946731", "time": "2026-09-13T07:06Z", "ticker": "NVDA", "stance": "bear", "strength": 1, "summary": "AI 公司「停火」令黃仁勳同半導體股最唔開心，行業正在下行"}, {"id": "2099034116515831982", "handle": "Balder13946731", "time": "2026-09-13T07:15Z", "ticker": "CRWD", "stance": "bull", "strength": 2, "summary": "AI「停火」主要係加大安全投資，網絡安全股下週好大機會起飛"}, {"id": "2099034116515831982", "handle": "Balder13946731", "time": "2026-09-13T07:15Z", "ticker": "PANW", "stance": "bull", "strength": 2, "summary": "同上：AI 安全投資增加，PANW 受惠"}, {"id": "2099034116515831982", "handle": "Balder13946731", "time": "2026-09-13T07:15Z", "ticker": "CSCO", "stance": "bull", "strength": 2, "summary": "同上：AI 安全投資增加，CSCO 受惠"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "NBIS", "stance": "bull", "strength": 2, "summary": "Oracle 續約 GPU 算力加價 20% 轉售，對 NBIS 呢類 neocloud 係利好"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "IREN", "stance": "bull", "strength": 2, "summary": "同一論點：舊 GPU 仲加價租得出，IREN 受惠"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "話之前睇漏咗 Oracle 業績入面算力續約加價嘅重點"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "SNDK", "stance": "bear", "strength": 1, "summary": "預告半導體「血腥一週」，問大家準備好未"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "MU", "stance": "bear", "strength": 1, "summary": "點名 MU，預告半導體「血腥一週」"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "INTC", "stance": "bear", "strength": 1, "summary": "點名 INTC，預告半導體「血腥一週」"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "AMD", "stance": "bear", "strength": 1, "summary": "點名 AMD，預告半導體「血腥一週」"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "MRVL", "stance": "bear", "strength": 1, "summary": "點名 MRVL，預告半導體「血腥一週」"}, {"id": "2099179266852196638", "handle": "ren_stocks", "time": "2026-09-13T16:51Z", "ticker": "NVDA", "stance": "bear", "strength": 1, "summary": "點名 NVDA，預告半導體「血腥一週」"}, {"id": "2099185639170130377", "handle": "StockMKTNewz", "time": "2026-09-13T17:17Z", "ticker": "QQQ", "stance": "bull", "strength": 1, "summary": "預期納指 100 今年盈利按年升 43%"}, {"id": "2099233730065846683", "handle": "StockMKTNewz", "time": "2026-09-13T20:28Z", "ticker": "RKLB", "stance": "bull", "strength": 1, "summary": "Electron 完成第 95 次發射，今年第 16 次任務"}, {"id": "2099266354369249348", "handle": "Balder13946731", "time": "2026-09-13T22:37Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "Ellison 喺高位取消 75 億美元賣股計劃，同其他高管套現相反"}, {"id": "2099268526506746078", "handle": "StockMKTNewz", "time": "2026-09-13T22:46Z", "ticker": "SPCX", "stance": "bull", "strength": 1, "summary": "馬斯克話明年 SpaceX 會將 Nvidia 運算機櫃射上太空"}, {"id": "2099268526506746078", "handle": "StockMKTNewz", "time": "2026-09-13T22:46Z", "ticker": "NVDA", "stance": "bull", "strength": 1, "summary": "Nvidia 運算機櫃可能明年上太空"}], "congress": {"SPCX": {"b": 7, "s": 0, "people": ["Daniel Meuser", "Gilbert Cisneros", "John McGuire", "Maria Elvira Salazar", "William R. Timmons IV"]}, "ADBE": {"b": 0, "s": 3, "people": ["Dan Newhouse", "Gilbert Cisneros", "Kevin Hern"]}, "AMD": {"b": 2, "s": 2, "people": ["Dan Newhouse", "Gilbert Cisneros", "Richard W. Allen"]}, "CRWD": {"b": 2, "s": 0, "people": ["Gilbert Cisneros", "Josh Gottheimer"]}, "MRVL": {"b": 1, "s": 0, "people": ["Gilbert Cisneros"]}, "NVDA": {"b": 6, "s": 8, "people": ["Cleo Fields", "Cory A Booker", "Dan Newhouse", "Gilbert Cisneros", "John J Mr McGuire III", "Matthew Robert Van Epps", "Michael Rulli", "Sam T. Liccardo", "Sheldon Whitehouse"]}, "BE": {"b": 4, "s": 0, "people": ["Nancy Pelosi"]}, "INTC": {"b": 2, "s": 2, "people": ["Matthew Robert Van Epps", "Nancy Pelosi", "Shelley M Capito"]}, "AMZN": {"b": 1, "s": 3, "people": ["Cory A Booker", "Matthew Robert Van Epps", "Michael Rulli", "Thomas H. Kean Jr"]}, "CSCO": {"b": 0, "s": 2, "people": ["Richard Dean Dr McCormick", "Shelley M Capito"]}, "META": {"b": 2, "s": 2, "people": ["Gilbert Cisneros", "Jared Moskowitz", "Matthew Robert Van Epps"]}, "TSLA": {"b": 0, "s": 1, "people": ["Gilbert Cisneros"]}, "PANW": {"b": 1, "s": 2, "people": ["Dan Newhouse", "John J Mr McGuire III", "Josh Gottheimer"]}, "MU": {"b": 3, "s": 0, "people": ["Dan Newhouse", "Michael Rulli", "Sheldon Whitehouse"]}}, "prices": {"INTC": {"last": 102.94, "r1d": 0.0261, "r28": 0.0043, "r1y": 3.1829, "series": [["2026-08-14", 102.5], ["2026-08-17", 103.49], ["2026-08-18", 96.69], ["2026-08-19", 92.8], ["2026-08-20", 92.13], ["2026-08-21", 90.07], ["2026-08-24", 87.26], ["2026-08-25", 87.48], ["2026-08-26", 88.24], ["2026-08-27", 92.09], ["2026-08-28", 89.47], ["2026-08-31", 89.51], ["2026-09-01", 88.97], ["2026-09-02", 90.05], ["2026-09-03", 91.67], ["2026-09-04", 95.8], ["2026-09-08", 104.47], ["2026-09-09", 106.24], ["2026-09-10", 100.32], ["2026-09-11", 102.94]]}, "MU": {"last": 975.26, "r1d": -0.0022, "r28": 0.0037, "r1y": 5.4875, "series": [["2026-08-14", 971.66], ["2026-08-17", 1011.75], ["2026-08-18", 940.76], ["2026-08-19", 937.11], ["2026-08-20", 974.33], ["2026-08-21", 966.78], ["2026-08-24", 910.43], ["2026-08-25", 932.97], ["2026-08-26", 938.4], ["2026-08-27", 935.39], ["2026-08-28", 932.86], ["2026-08-31", 958.73], ["2026-09-01", 933.44], ["2026-09-02", 956.08], ["2026-09-03", 958.16], ["2026-09-04", 1016.59], ["2026-09-08", 1000.26], ["2026-09-09", 1027.77], ["2026-09-10", 977.41], ["2026-09-11", 975.26]]}, "RKLB": {"last": 62.95, "r1d": 0.016, "r28": -0.2156, "r1y": 0.2998, "series": [["2026-08-14", 80.25], ["2026-08-17", 82.08], ["2026-08-18", 79.16], ["2026-08-19", 75.84], ["2026-08-20", 72.95], ["2026-08-21", 72.57], ["2026-08-24", 68.28], ["2026-08-25", 66.91], ["2026-08-26", 66.18], ["2026-08-27", 67.53], ["2026-08-28", 64.39], ["2026-08-31", 63.92], ["2026-09-01", 62.54], ["2026-09-02", 63.1], ["2026-09-03", 63.81], ["2026-09-04", 64.26], ["2026-09-08", 65.87], ["2026-09-09", 63.07], ["2026-09-10", 61.96], ["2026-09-11", 62.95]]}, "SONY": {"last": 23.9, "r1d": 0.0162, "r28": -0.0161, "r1y": -0.1812, "series": [["2026-08-14", 24.29], ["2026-08-17", 23.7], ["2026-08-18", 23.43], ["2026-08-19", 23.49], ["2026-08-20", 23.58], ["2026-08-21", 23.92], ["2026-08-24", 24.26], ["2026-08-25", 24.05], ["2026-08-26", 24.12], ["2026-08-27", 24.07], ["2026-08-28", 24.85], ["2026-08-31", 24.56], ["2026-09-01", 24.81], ["2026-09-02", 24.65], ["2026-09-03", 24.96], ["2026-09-04", 24.56], ["2026-09-08", 23.53], ["2026-09-09", 23.44], ["2026-09-10", 23.52], ["2026-09-11", 23.9]]}, "META": {"last": 648.03, "r1d": 0.0057, "r28": 0.0986, "r1y": -0.1342, "series": [["2026-08-14", 589.85], ["2026-08-17", 568.97], ["2026-08-18", 543.67], ["2026-08-19", 546.03], ["2026-08-20", 545.83], ["2026-08-21", 549.9], ["2026-08-24", 559.02], ["2026-08-25", 570.05], ["2026-08-26", 576.14], ["2026-08-27", 571.1], ["2026-08-28", 578.02], ["2026-08-31", 572.34], ["2026-09-01", 578.54], ["2026-09-02", 592.85], ["2026-09-03", 610.68], ["2026-09-04", 616.77], ["2026-09-08", 613.48], ["2026-09-09", 653.69], ["2026-09-10", 644.38], ["2026-09-11", 648.03]]}, "IREN": {"last": 43.83, "r1d": 0.0044, "r28": -0.0052, "r1y": 0.3342, "series": [["2026-08-14", 44.06], ["2026-08-17", 44.9], ["2026-08-18", 42.0], ["2026-08-19", 42.84], ["2026-08-20", 42.6], ["2026-08-21", 41.88], ["2026-08-24", 39.81], ["2026-08-25", 42.21], ["2026-08-26", 39.58], ["2026-08-27", 40.53], ["2026-08-28", 35.45], ["2026-08-31", 37.12], ["2026-09-01", 36.82], ["2026-09-02", 39.6], ["2026-09-03", 41.65], ["2026-09-04", 44.68], ["2026-09-08", 46.93], ["2026-09-09", 45.37], ["2026-09-10", 43.64], ["2026-09-11", 43.83]]}, "QQQ": {"last": 714.88, "r1d": 0.0087, "r28": -0.0221, "r1y": 0.2298, "series": [["2026-08-14", 731.07], ["2026-08-17", 729.87], ["2026-08-18", 717.51], ["2026-08-19", 716.08], ["2026-08-20", 710.93], ["2026-08-21", 713.44], ["2026-08-24", 706.32], ["2026-08-25", 710.72], ["2026-08-26", 711.37], ["2026-08-27", 721.11], ["2026-08-28", 716.43], ["2026-08-31", 716.76], ["2026-09-01", 707.64], ["2026-09-02", 709.24], ["2026-09-03", 717.67], ["2026-09-04", 718.96], ["2026-09-08", 718.36], ["2026-09-09", 716.31], ["2026-09-10", 708.69], ["2026-09-11", 714.88]]}, "AON": {"last": 302.69, "r1d": -0.0165, "r28": -0.1493, "r1y": -0.1829, "series": [["2026-08-14", 355.83], ["2026-08-17", 347.22], ["2026-08-18", 343.2], ["2026-08-19", 348.43], ["2026-08-20", 351.93], ["2026-08-21", 355.11], ["2026-08-24", 359.1], ["2026-08-25", 354.83], ["2026-08-26", 353.98], ["2026-08-27", 349.56], ["2026-08-28", 355.4], ["2026-08-31", 321.52], ["2026-09-01", 326.3], ["2026-09-02", 330.88], ["2026-09-03", 327.0], ["2026-09-04", 323.09], ["2026-09-08", 315.79], ["2026-09-09", 304.69], ["2026-09-10", 307.77], ["2026-09-11", 302.69]]}, "BE": {"last": 275.75, "r1d": 0.0668, "r28": 0.1992, "r1y": 3.0979, "series": [["2026-08-14", 229.94], ["2026-08-17", 232.16], ["2026-08-18", 209.01], ["2026-08-19", 206.63], ["2026-08-20", 202.48], ["2026-08-21", 201.45], ["2026-08-24", 204.02], ["2026-08-25", 217.45], ["2026-08-26", 218.21], ["2026-08-27", 217.83], ["2026-08-28", 210.77], ["2026-08-31", 206.3], ["2026-09-01", 213.63], ["2026-09-02", 217.28], ["2026-09-03", 235.55], ["2026-09-04", 252.87], ["2026-09-08", 277.22], ["2026-09-09", 269.28], ["2026-09-10", 258.49], ["2026-09-11", 275.75]]}, "AMD": {"last": 516.13, "r1d": 0.0249, "r28": 0.0034, "r1y": 2.3155, "series": [["2026-08-14", 514.39], ["2026-08-17", 506.0], ["2026-08-18", 484.39], ["2026-08-19", 466.42], ["2026-08-20", 469.46], ["2026-08-21", 473.25], ["2026-08-24", 456.75], ["2026-08-25", 479.18], ["2026-08-26", 480.93], ["2026-08-27", 476.67], ["2026-08-28", 465.58], ["2026-08-31", 470.72], ["2026-09-01", 459.61], ["2026-09-02", 457.06], ["2026-09-03", 456.16], ["2026-09-04", 477.57], ["2026-09-08", 505.74], ["2026-09-09", 521.1], ["2026-09-10", 503.6], ["2026-09-11", 516.13]]}, "NBIS": {"last": 224.55, "r1d": -0.0156, "r28": -0.1913, "r1y": 1.5177, "series": [["2026-08-14", 277.68], ["2026-08-17", 268.85], ["2026-08-18", 248.43], ["2026-08-19", 223.9], ["2026-08-20", 220.11], ["2026-08-21", 219.13], ["2026-08-24", 210.91], ["2026-08-25", 221.97], ["2026-08-26", 213.93], ["2026-08-27", 218.48], ["2026-08-28", 209.18], ["2026-08-31", 206.32], ["2026-09-01", 199.54], ["2026-09-02", 204.09], ["2026-09-03", 210.63], ["2026-09-04", 226.39], ["2026-09-08", 243.88], ["2026-09-09", 240.35], ["2026-09-10", 228.11], ["2026-09-11", 224.55]]}, "AMZN": {"last": 256.78, "r1d": 0.0194, "r28": -0.0223, "r1y": 0.1167, "series": [["2026-08-14", 262.65], ["2026-08-17", 261.31], ["2026-08-18", 259.45], ["2026-08-19", 265.84], ["2026-08-20", 260.11], ["2026-08-21", 258.63], ["2026-08-24", 262.07], ["2026-08-25", 261.06], ["2026-08-26", 260.28], ["2026-08-27", 256.26], ["2026-08-28", 266.43], ["2026-08-31", 259.77], ["2026-09-01", 254.92], ["2026-09-02", 254.98], ["2026-09-03", 258.9], ["2026-09-04", 258.51], ["2026-09-08", 256.97], ["2026-09-09", 252.4], ["2026-09-10", 251.89], ["2026-09-11", 256.78]]}, "ADBE": {"last": 252.23, "r1d": 0.0137, "r28": -0.0447, "r1y": -0.2805, "series": [["2026-08-14", 264.02], ["2026-08-17", 254.04], ["2026-08-18", 263.14], ["2026-08-19", 272.47], ["2026-08-20", 272.22], ["2026-08-21", 275.3], ["2026-08-24", 276.27], ["2026-08-25", 273.92], ["2026-08-26", 273.47], ["2026-08-27", 289.15], ["2026-08-28", 291.52], ["2026-08-31", 292.79], ["2026-09-01", 286.08], ["2026-09-02", 279.79], ["2026-09-03", 285.75], ["2026-09-04", 266.51], ["2026-09-08", 257.26], ["2026-09-09", 254.86], ["2026-09-10", 248.83], ["2026-09-11", 252.23]]}, "CRWD": {"last": 206.74, "r1d": -0.0102, "r28": -0.0471, "r1y": 0.9082, "series": [["2026-08-14", 216.95], ["2026-08-17", 213.9], ["2026-08-18", 212.92], ["2026-08-19", 201.63], ["2026-08-20", 190.34], ["2026-08-21", 191.95], ["2026-08-24", 190.68], ["2026-08-25", 185.38], ["2026-08-26", 189.18], ["2026-08-27", 227.96], ["2026-08-28", 218.4], ["2026-08-31", 231.0], ["2026-09-01", 215.07], ["2026-09-02", 203.42], ["2026-09-03", 214.97], ["2026-09-04", 213.1], ["2026-09-08", 210.02], ["2026-09-09", 207.8], ["2026-09-10", 208.86], ["2026-09-11", 206.74]]}, "CSCO": {"last": 112.13, "r1d": 0.0437, "r28": 0.004, "r1y": 0.6908, "series": [["2026-08-14", 111.68], ["2026-08-17", 112.9], ["2026-08-18", 111.61], ["2026-08-19", 110.55], ["2026-08-20", 109.59], ["2026-08-21", 111.04], ["2026-08-24", 110.23], ["2026-08-25", 111.11], ["2026-08-26", 112.36], ["2026-08-27", 112.15], ["2026-08-28", 109.93], ["2026-08-31", 110.49], ["2026-09-01", 109.74], ["2026-09-02", 109.46], ["2026-09-03", 108.61], ["2026-09-04", 109.2], ["2026-09-08", 109.17], ["2026-09-09", 109.43], ["2026-09-10", 107.44], ["2026-09-11", 112.13]]}, "PANW": {"last": 330.65, "r1d": -0.0232, "r28": -0.1395, "r1y": 0.6672, "series": [["2026-08-14", 384.27], ["2026-08-17", 375.76], ["2026-08-18", 374.14], ["2026-08-19", 359.76], ["2026-08-20", 349.56], ["2026-08-21", 357.87], ["2026-08-24", 350.9], ["2026-08-25", 339.9], ["2026-08-26", 339.31], ["2026-08-27", 382.85], ["2026-08-28", 371.59], ["2026-08-31", 382.13], ["2026-09-01", 362.09], ["2026-09-02", 328.48], ["2026-09-03", 331.94], ["2026-09-04", 333.26], ["2026-09-08", 336.98], ["2026-09-09", 335.1], ["2026-09-10", 338.49], ["2026-09-11", 330.65]]}, "MRVL": {"last": 236.1, "r1d": 0.0403, "r28": 0.0634, "r1y": 2.5531, "series": [["2026-08-14", 222.02], ["2026-08-17", 234.33], ["2026-08-18", 216.0], ["2026-08-19", 237.27], ["2026-08-20", 251.01], ["2026-08-21", 237.04], ["2026-08-24", 229.29], ["2026-08-25", 240.38], ["2026-08-26", 245.11], ["2026-08-27", 241.45], ["2026-08-28", 216.62], ["2026-08-31", 211.66], ["2026-09-01", 210.39], ["2026-09-02", 206.48], ["2026-09-03", 208.83], ["2026-09-04", 223.55], ["2026-09-08", 225.41], ["2026-09-09", 235.01], ["2026-09-10", 226.96], ["2026-09-11", 236.1]]}, "SMH": {"last": 568.53, "r1d": 0.0147, "r28": -0.0328, "r1y": 0.8764, "series": [["2026-08-14", 587.82], ["2026-08-17", 594.07], ["2026-08-18", 569.77], ["2026-08-19", 560.92], ["2026-08-20", 562.65], ["2026-08-21", 560.42], ["2026-08-24", 546.8], ["2026-08-25", 555.82], ["2026-08-26", 555.77], ["2026-08-27", 573.0], ["2026-08-28", 553.11], ["2026-08-31", 556.63], ["2026-09-01", 545.22], ["2026-09-02", 550.48], ["2026-09-03", 552.6], ["2026-09-04", 567.01], ["2026-09-08", 573.73], ["2026-09-09", 574.29], ["2026-09-10", 560.28], ["2026-09-11", 568.53]]}, "NVDA": {"last": 218.29, "r1d": -0.0003, "r28": -0.0294, "r1y": 0.235, "series": [["2026-08-14", 224.91], ["2026-08-17", 224.76], ["2026-08-18", 219.49], ["2026-08-19", 217.32], ["2026-08-20", 216.61], ["2026-08-21", 214.48], ["2026-08-24", 208.25], ["2026-08-25", 212.81], ["2026-08-26", 209.43], ["2026-08-27", 227.73], ["2026-08-28", 217.31], ["2026-08-31", 220.53], ["2026-09-01", 217.2], ["2026-09-02", 224.16], ["2026-09-03", 228.19], ["2026-09-04", 230.1], ["2026-09-08", 225.48], ["2026-09-09", 223.42], ["2026-09-10", 218.36], ["2026-09-11", 218.29]]}, "SPCX": {"last": 151.21, "r1d": 0.0204, "r28": 0.0801, "r1y": null, "series": [["2026-08-14", 140.0], ["2026-08-17", 146.23], ["2026-08-18", 143.34], ["2026-08-19", 139.65], ["2026-08-20", 134.0], ["2026-08-21", 136.97], ["2026-08-24", 135.0], ["2026-08-25", 137.95], ["2026-08-26", 139.63], ["2026-08-27", 140.87], ["2026-08-28", 141.5], ["2026-08-31", 143.69], ["2026-09-01", 142.23], ["2026-09-02", 140.71], ["2026-09-03", 149.74], ["2026-09-04", 147.95], ["2026-09-08", 153.47], ["2026-09-09", 147.55], ["2026-09-10", 148.18], ["2026-09-11", 151.21]]}, "GFS": {"last": 46.95, "r1d": 0.0215, "r28": -0.1398, "r1y": 0.4615, "series": [["2026-08-14", 54.58], ["2026-08-17", 53.44], ["2026-08-18", 49.9], ["2026-08-19", 48.58], ["2026-08-20", 47.33], ["2026-08-21", 48.05], ["2026-08-24", 45.95], ["2026-08-25", 45.92], ["2026-08-26", 45.67], ["2026-08-27", 46.34], ["2026-08-28", 44.76], ["2026-08-31", 44.69], ["2026-09-01", 43.93], ["2026-09-02", 43.97], ["2026-09-03", 44.53], ["2026-09-04", 45.21], ["2026-09-08", 45.09], ["2026-09-09", 45.95], ["2026-09-10", 45.96], ["2026-09-11", 46.95]]}, "SNDK": {"last": 1633.35, "r1d": -0.035, "r28": -0.0047, "r1y": 18.3754, "series": [["2026-08-14", 1641.11], ["2026-08-17", 1786.85], ["2026-08-18", 1625.78], ["2026-08-19", 1568.87], ["2026-08-20", 1600.62], ["2026-08-21", 1596.08], ["2026-08-24", 1493.12], ["2026-08-25", 1480.77], ["2026-08-26", 1499.37], ["2026-08-27", 1484.95], ["2026-08-28", 1484.98], ["2026-08-31", 1566.7], ["2026-09-01", 1536.87], ["2026-09-02", 1553.4], ["2026-09-03", 1554.99], ["2026-09-04", 1740.0], ["2026-09-08", 1737.99], ["2026-09-09", 1764.17], ["2026-09-10", 1692.59], ["2026-09-11", 1633.35]]}, "CRWV": {"last": 88.99, "r1d": -0.0015, "r28": -0.1546, "r1y": -0.2103, "series": [["2026-08-14", 105.26], ["2026-08-17", 106.0], ["2026-08-18", 93.17], ["2026-08-19", 90.87], ["2026-08-20", 89.76], ["2026-08-21", 87.85], ["2026-08-24", 86.25], ["2026-08-25", 88.04], ["2026-08-26", 88.01], ["2026-08-27", 86.8], ["2026-08-28", 84.23], ["2026-08-31", 84.89], ["2026-09-01", 81.85], ["2026-09-02", 80.93], ["2026-09-03", 84.56], ["2026-09-04", 89.36], ["2026-09-08", 99.83], ["2026-09-09", 94.94], ["2026-09-10", 89.12], ["2026-09-11", 88.99]]}, "ORCL": {"last": 150.28, "r1d": -0.0174, "r28": -0.0016, "r1y": -0.5063, "series": [["2026-08-14", 150.52], ["2026-08-17", 146.65], ["2026-08-18", 142.79], ["2026-08-19", 143.81], ["2026-08-20", 142.07], ["2026-08-21", 146.47], ["2026-08-24", 142.45], ["2026-08-25", 144.76], ["2026-08-26", 148.87], ["2026-08-27", 151.94], ["2026-08-28", 150.85], ["2026-08-31", 149.12], ["2026-09-01", 141.32], ["2026-09-02", 145.75], ["2026-09-03", 154.04], ["2026-09-04", 158.78], ["2026-09-08", 162.52], ["2026-09-09", 161.63], ["2026-09-10", 152.94], ["2026-09-11", 150.28]]}, "TSLA": {"last": 365.44, "r1d": 0.0052, "r28": 0.0677, "r1y": -0.0091, "series": [["2026-08-14", 342.27], ["2026-08-17", 339.3], ["2026-08-18", 336.87], ["2026-08-19", 351.12], ["2026-08-20", 345.13], ["2026-08-21", 362.86], ["2026-08-24", 348.95], ["2026-08-25", 350.25], ["2026-08-26", 345.82], ["2026-08-27", 354.81], ["2026-08-28", 348.75], ["2026-08-31", 367.95], ["2026-09-01", 356.09], ["2026-09-02", 357.01], ["2026-09-03", 376.37], ["2026-09-04", 354.08], ["2026-09-08", 368.16], ["2026-09-09", 367.81], ["2026-09-10", 363.56], ["2026-09-11", 365.44]]}}, "analyses": {"2026-09-13": "週末討論集中喺 Anthropic、OpenAI 呼籲放慢 AI 研發對科技股嘅影響。Ren 預告半導體「血腥一週」，點名 SNDK、MU、NVDA 等六隻；Balder 認為 AI「停火」利好網絡安全，睇好 CRWD、PANW、CSCO，同時指半導體受壓。ORCL 方面，Balder 同 Serenity 都偏正面（Ellison 取消賣股、算力續約加價），但大老师週初財報前睇淡。整體：網絡安全一致睇好，半導體出現明顯分歧。"}}</script>
 <script>
 (() => {
 const D = JSON.parse(document.getElementById('data').textContent);
-const NOW = Date.parse(D.generated);
-const ACC = Object.fromEntries(D.accounts.map(a => [a.handle, a]));
+const NOW = Date.parse(D.generated), DAY = 86400e3;
+const ACCS = D.accounts, ACC = Object.fromEntries(ACCS.map(a => [a.handle, a]));
 const OPS = D.opinions.map(o => ({...o, ts: Date.parse(o.time)})).sort((a, b) => a.ts - b.ts);
 const LABEL = {bull: '睇好', bear: '睇淡', neutral: '中性'};
-let W = D.windows.includes(7) ? 7 : D.windows[0];
+const TYPE = {opinion: '觀點帳號', news: '市場新聞', disclosure: '交易披露'};
 const $ = id => document.getElementById(id);
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const day = ts => new Date(ts).toLocaleDateString('zh-HK', {month: 'numeric', day: 'numeric', timeZone: 'America/Los_Angeles'});
-const name = h => ACC[h]?.name || h;
-const tweet = o => `https://x.com/${o.handle}/status/${o.id}`;
-const inWin = () => OPS.filter(o => o.ts >= NOW - W * 86400e3);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const md = ts => new Date(ts).toLocaleDateString('zh-HK', {month: 'numeric', day: 'numeric', timeZone: 'America/Los_Angeles'});
+const nm = h => ACC[h]?.name || h;
+const post = o => `<a href="https://x.com/${esc(o.handle)}/status/${esc(o.id)}" target="_blank" rel="noopener">原帖</a>`;
+const pct = v => v == null ? '<span class="muted">—</span>' : `<span class="num ${v >= 0 ? 'up' : 'down'}">${v >= 0 ? '+' : ''}${(v * 100).toFixed(1)}%</span>`;
+const PX = D.prices || {};
+const tkBtn = (tk, cls = '') => `<button class="tk ${cls}" data-drill="${esc(tk)}">${esc(tk)}</button>`;
+const ORDER = {bull: 0, neutral: 1, bear: 2};
+let VIEW = 'today', DRILL = null, DRILL_W = 7, SORT = {key: 'bullSig', dir: -1};
 
-function board(ops) {
-  const by = {};
-  for (const o of ops) {                       // 時序遞增，後面覆蓋前面 = 最新立場
-    (by[o.ticker] ??= {latest: {}, mentions: 0}).latest[o.handle] = o;
-    by[o.ticker].mentions++;
-  }
-  return Object.entries(by).map(([tk, v]) => {
-    const L = Object.values(v.latest);
-    const bull = L.filter(o => o.stance === 'bull'), bear = L.filter(o => o.stance === 'bear');
-    const neu = L.length - bull.length - bear.length;
-    const score = bull.reduce((s, o) => s + o.strength, 0) - bear.reduce((s, o) => s + o.strength, 0);
-    let label, cls;
-    if (!bull.length && !bear.length) [label, cls] = ['只係提及', 'neu'];
-    else if (bull.length && bear.length) [label, cls] = ['有分歧', 'split'];
-    else if (bull.length >= 2) [label, cls] = ['一致睇好', 'bull'];
-    else if (bear.length >= 2) [label, cls] = ['一致睇淡', 'bear'];
-    else if (bull.length) [label, cls] = ['單一睇好', 'bull'];
-    else [label, cls] = ['單一睇淡', 'bear'];
-    return {tk, L, bull: bull.length, bear: bear.length, neu, score, mentions: v.mentions, label, cls};
-  }).sort((a, b) => (b.bull + b.bear) - (a.bull + a.bear) || Math.abs(b.score) - Math.abs(a.score) || b.mentions - a.mentions);
+const between = (from, to) => OPS.filter(o => o.ts >= from && o.ts <= to);
+function rangeFor(v) {
+  if (v === 'week') return {days: 7, ops: between(NOW - 7 * DAY, NOW)};
+  if (v === 'month') return {days: 28, ops: between(NOW - 28 * DAY, NOW)};
+  let days = 1, ops = between(NOW - DAY, NOW);
+  if (ops.filter(o => o.stance !== 'neutral').length < 3) { days = 2; ops = between(NOW - 2 * DAY, NOW); }
+  return {days, ops};
 }
 
-function changes() {
-  const prev = {}, out = {};
-  const start = NOW - W * 86400e3;
+function groups(ops) {
+  const by = {};
+  for (const o of ops) {
+    const g = by[o.ticker] ??= {tk: o.ticker, latest: {}, all: []};
+    g.latest[o.handle] = o; g.all.push(o);
+  }
+  return Object.values(by).map(g => {
+    const L = Object.values(g.latest);
+    const bull = L.filter(o => o.stance === 'bull'), bear = L.filter(o => o.stance === 'bear');
+    const kind = bull.length && bear.length ? 'split' : bull.length >= 2 ? 'bull' : bear.length >= 2 ? 'bear' : 'other';
+    return {...g, L, bull, bear, neu: L.length - bull.length - bear.length, kind, mentions: g.all.length,
+      bullSig: g.all.filter(o => o.stance === 'bull').length, bearSig: g.all.filter(o => o.stance === 'bear').length};
+  });
+}
+
+function viewCard(g, cls, title) {
+  const rows = g.L.slice().sort((a, b) => ORDER[a.stance] - ORDER[b.stance] || b.ts - a.ts);
+  return `<div class="box vc ${cls}"><div class="vc-h"><button class="big" data-drill="${esc(g.tk)}">${esc(g.tk)}</button>
+    <span class="num">${pct(PX[g.tk]?.r1d)} <span class="muted" style="font-size:11px">今日</span></span></div>
+    <div class="muted" style="font-size:12px;margin:-2px 0 8px">${title}</div>
+    <ul>${rows.map(o => `<li><span class="who"><span class="dot ${o.stance}"></span>${esc(nm(o.handle))}</span><span class="why">${esc(o.summary)}</span>${post(o)}</li>`).join('')}</ul></div>`;
+}
+
+function changes(days) {
+  const prev = {}, out = {}, start = NOW - days * DAY;
   for (const o of OPS) {
     const k = o.handle + '|' + o.ticker, p = prev[k];
     let kind = null, cls = '';
-    if (!p) { if (o.stance !== 'neutral') [kind, cls] = ['新表態', o.stance === 'bull' ? 'up' : 'down']; }
-    else if (p.stance !== o.stance) {
+    if (p && p.stance !== o.stance) {
       if (p.stance !== 'neutral' && o.stance !== 'neutral') [kind, cls] = ['反轉', 'flip'];
       else if (o.stance === 'neutral') [kind, cls] = ['轉中性', 'down'];
       else [kind, cls] = ['表態', o.stance === 'bull' ? 'up' : 'down'];
-    } else if (o.stance !== 'neutral' && o.strength !== p.strength) {
+    } else if (p && o.stance !== 'neutral' && o.strength !== p.strength) {
       [kind, cls] = o.strength > p.strength ? ['加強', o.stance === 'bull' ? 'up' : 'down'] : ['減弱', 'down'];
     }
     if (kind && o.ts >= start) out[k] = {o, p, kind, cls};
     prev[k] = o;
   }
-  // 真正轉咗軚嘅排前，第一次表態排後 —— 新帳號／新數據一開始全部都係「新表態」
-  return Object.values(out).sort((a, b) => (a.kind === '新表態') - (b.kind === '新表態') || b.o.ts - a.o.ts);
+  return Object.values(out).sort((a, b) => b.o.ts - a.o.ts);
+}
+const changeList = cs => cs.length ? `<div class="box">${cs.slice(0, 15).map(c => `<div class="chg"><span class="kind ${c.cls}">${c.kind}</span>
+  <span><strong>${esc(nm(c.o.handle))}</strong> · ${tkBtn(c.o.ticker)} · ${LABEL[c.p.stance]} → ${LABEL[c.o.stance]}</span>
+  <span class="sub">${md(c.o.ts)}：${esc(c.o.summary)} ${post(c.o)}</span></div>`).join('')}</div>`
+  : '<p class="empty">呢段時間冇帳號改變立場（同佢上一次講法比較）。</p>';
+
+const stat = (k, v) => `<div class="box stat"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+const statBoxes = ops => `<div class="grid g4">${stat('參與帳號', `${new Set(ops.map(o => o.handle)).size} / ${ACCS.length}`)}${stat('提及', ops.length)}${stat('睇好訊號', `<span class="up">${ops.filter(o => o.stance === 'bull').length}</span>`)}${stat('睇淡訊號', `<span class="down">${ops.filter(o => o.stance === 'bear').length}</span>`)}</div>`;
+const deltaSpan = d => `<span class="num ${d > 0 ? 'up' : d < 0 ? 'down' : 'muted'}" style="font-size:12px">${d > 0 ? '+' + d : d < 0 ? d : '±0'}</span>`;
+
+function renderToday() {
+  const {days, ops} = rangeFor('today');
+  const G = groups(ops);
+  const rangeNote = days === 2 ? `<span class="n">今日有效數據唔夠，已合併前一日（${md(NOW - 2 * DAY)}–${md(NOW)}）</span>` : `<span class="n">${md(NOW)}</span>`;
+  const cards = ACCS.map(a => {
+    const last = {};
+    for (const o of ops.filter(o => o.handle === a.handle)) last[o.ticker] = o;
+    const L = Object.values(last);
+    const b = L.filter(o => o.stance === 'bull'), r = L.filter(o => o.stance === 'bear'), n = L.filter(o => o.stance === 'neutral');
+    const body = b.length || r.length
+      ? `<div class="row"><span class="lab bull">睇好</span>${b.length ? b.map(o => tkBtn(o.ticker, 'bull')).join('') : '<span class="muted">冇明確睇好帖文</span>'}</div>
+         <div class="row"><span class="lab bear">睇淡</span>${r.length ? r.map(o => tkBtn(o.ticker, 'bear')).join('') : '<span class="muted">冇明確睇淡帖文</span>'}</div>`
+      : `<div class="row muted">冇明確睇好或睇淡</div><div class="row"><span class="lab neu">提及</span>${n.length ? n.map(o => tkBtn(o.ticker)).join('') : '<span class="muted">冇提及</span>'}</div>`;
+    return `<div class="box"><div class="acc-h"><div><a href="https://x.com/${esc(a.handle)}" target="_blank" rel="noopener">${esc(a.name)}</a>
+      <div class="h">@${esc(a.handle)}</div></div><span class="badge ${esc(a.type)}">${TYPE[a.type] || ''}</span></div>
+      <div class="desc" title="${esc(a.note)}">${esc(a.note)}</div>${body}</div>`;
+  }).join('');
+  const aDates = Object.keys(D.analyses || {}).sort(), aDate = aDates[aDates.length - 1];
+  const byAcc = k => G.filter(g => g.kind === k).sort((x, y) => y.L.length - x.L.length);
+  const sb = byAcc('bull'), sr = byAcc('bear'), sp = byAcc('split');
+  const pc = {}; for (const o of between(NOW - 2 * days * DAY, NOW - days * DAY)) pc[o.ticker] = (pc[o.ticker] || 0) + 1;
+  const att = G.map(g => ({tk: g.tk, n: g.mentions, d: g.mentions - (pc[g.tk] || 0)})).sort((a, b) => b.n - a.n || b.d - a.d).slice(0, 14);
+  $('view').innerHTML = `
+    <h2>${ACCS.length} 個帳號今日狀態${rangeNote}</h2>
+    <div class="grid g4">${cards}</div>
+    <h2>今日市場分析${aDate ? `<span class="n">${esc(aDate)}</span>` : ''}</h2>
+    ${aDate ? `<div class="analysis"><p>${esc(D.analyses[aDate])}</p></div>` : '<p class="empty">今日未有分析。</p>'}
+    <h2>一致睇好<span class="n">≥2 個帳號睇好、冇人睇淡</span></h2>
+    ${sb.length ? `<div class="grid g3">${sb.map(g => viewCard(g, 'bull', `${g.bull.length} 個帳號睇好`)).join('')}</div>` : '<p class="empty">今日冇一致睇好嘅股票。</p>'}
+    <h2>一致睇淡<span class="n">≥2 個帳號睇淡、冇人睇好</span></h2>
+    ${sr.length ? `<div class="grid g3">${sr.map(g => viewCard(g, 'bear', `${g.bear.length} 個帳號睇淡`)).join('')}</div>` : '<p class="empty">今日冇一致睇淡嘅股票。</p>'}
+    <h2>多空分歧<span class="n">同一隻股有人睇好、有人睇淡</span></h2>
+    ${sp.length ? `<div class="grid g3">${sp.map(g => viewCard(g, '', `${g.bull.length} 睇好 · ${g.bear.length} 睇淡`)).join('')}</div>` : '<p class="empty">今日冇明顯分歧。</p>'}
+    <h2>關注度變化<span class="n">提及次數，同前一段同樣長嘅時間比</span></h2>
+    ${att.length ? `<div class="box"><div class="row" style="gap:10px 18px">${att.map(x => `<span>${tkBtn(x.tk)} <span class="num">${x.n}</span> ${deltaSpan(x.d)}</span>`).join('')}</div></div>` : '<p class="empty">冇提及。</p>'}`;
 }
 
-function cong(tk) {
-  const c = D.congress[tk];
-  if (!c) return '<span class="muted">—</span>';
-  return `<span class="cong" title="${esc(c.people.join('、'))}"><span class="b">買 ${c.b}</span> / <span class="s">賣 ${c.s}</span></span>`;
+function renderWeek() {
+  const {ops} = rangeFor('week');
+  const G = groups(ops);
+  const prev = between(NOW - 14 * DAY, NOW - 7 * DAY), pc = {};
+  for (const o of prev) pc[o.ticker] = (pc[o.ticker] || 0) + 1;
+  G.forEach(g => g.d = g.mentions - (pc[g.tk] || 0));
+  const multi = G.filter(g => g.L.length >= 2).sort((a, b) => b.L.length - a.L.length || b.mentions - a.mentions);
+  const kindTitle = g => g.kind === 'split' ? `${g.bull.length} 睇好 · ${g.bear.length} 睇淡` : g.kind === 'bull' ? `${g.bull.length} 個帳號睇好` : g.kind === 'bear' ? `${g.bear.length} 個帳號睇淡` : `${g.L.length} 個帳號提及`;
+  const focus = ACCS.map(a => {
+    const mine = ops.filter(o => o.handle === a.handle), d = mine.length - prev.filter(o => o.handle === a.handle).length;
+    const c = {};
+    for (const o of mine) { const x = c[o.ticker] ??= {n: 0, b: 0, r: 0}; x.n++; if (o.stance === 'bull') x.b++; if (o.stance === 'bear') x.r++; }
+    const top = Object.entries(c).sort((x, y) => y[1].n - x[1].n).slice(0, 5);
+    return `<div class="box"><div class="acc-h"><div><strong>${esc(a.name)}</strong> <span class="h">@${esc(a.handle)}</span></div>
+      <span class="num">${mine.length} 次 ${deltaSpan(d)}</span></div>
+      <div class="row">${top.length ? top.map(([tk, v]) => tkBtn(tk, v.b > v.r ? 'bull' : v.r > v.b ? 'bear' : '')).join('') : '<span class="muted">本週冇講個股</span>'}</div></div>`;
+  }).join('');
+  const dist = G.sort((a, b) => b.L.length - a.L.length || b.mentions - a.mentions);
+  $('view').innerHTML = `
+    <h2>近 7 日<span class="n">${md(NOW - 7 * DAY)}–${md(NOW)}</span></h2>${statBoxes(ops)}
+    <h2>多個帳號關注<span class="n">≥2 個帳號講過，按帳號數排</span></h2>
+    ${multi.length ? `<div class="grid g3">${multi.slice(0, 12).map(g => viewCard(g, g.kind === 'bull' ? 'bull' : g.kind === 'bear' ? 'bear' : '', kindTitle(g))).join('')}</div>` : '<p class="empty">冇股票俾多過一個帳號講過。</p>'}
+    <h2>立場分佈同討論熱度<span class="n">變化＝同再之前 7 日比</span></h2>
+    ${dist.length ? `<div class="scroll"><table><thead><tr><th>股票</th><th>立場分佈（每個帳號最新立場）</th><th>提及</th><th>變化</th><th>28 日回報</th><th>邊個講過</th></tr></thead><tbody>${dist.map(g => {
+      const n = g.L.length;
+      return `<tr><td>${tkBtn(g.tk)}</td><td><div class="split"><div class="bar"><i class="b" style="width:${g.bull.length / n * 100}%"></i><i class="n" style="width:${g.neu / n * 100}%"></i><i class="r" style="width:${g.bear.length / n * 100}%"></i></div>
+        <div class="lbl"><span class="up">${g.bull.length} 睇好</span><span class="muted">${g.neu} 中性</span><span class="down">${g.bear.length} 睇淡</span></div></div></td>
+        <td class="num">${g.mentions}</td><td>${deltaSpan(g.d)}</td><td>${pct(PX[g.tk]?.r28)}</td><td class="why">${esc(g.L.map(o => nm(o.handle)).join('、'))}</td></tr>`;
+    }).join('')}</tbody></table></div>` : '<p class="empty">冇數據。</p>'}
+    <h2>每個帳號本週焦點<span class="n">提及次數（同上週比）；綠＝睇好為主、紅＝睇淡為主</span></h2>
+    <div class="grid g4">${focus}</div>
+    <h2>立場變化</h2>${changeList(changes(7))}`;
+}
+
+function consistency(os) {
+  const by = {};
+  for (const o of os) (by[o.ticker] ??= []).push(o.stance);
+  const scored = Object.values(by).filter(s => s.length >= 2);
+  if (!scored.length) return null;
+  return scored.reduce((sum, s) => { const c = {}; s.forEach(x => c[x] = (c[x] || 0) + 1); return sum + Math.max(...Object.values(c)) / s.length; }, 0) / scored.length;
+}
+
+function renderMonth() {
+  const {ops} = rangeFor('month');
+  const G = groups(ops);
+  const bullN = ops.filter(o => o.stance === 'bull').length, bearN = ops.filter(o => o.stance === 'bear').length;
+  const flips = changes(28).filter(x => x.kind === '反轉');
+  const tops = ACCS.map(a => {
+    const c = {};
+    for (const o of ops.filter(o => o.handle === a.handle)) { const x = c[o.ticker] ??= {b: 0, n: 0, last: 0}; x.n++; if (o.stance === 'bull') x.b++; x.last = Math.max(x.last, o.ts); }
+    const best = Object.entries(c).filter(([, v]) => v.b > 0).sort((x, y) => y[1].b - x[1].b || y[1].n - x[1].n || y[1].last - x[1].last)[0];
+    return `<div class="box"><div><strong>${esc(a.name)}</strong> <span class="muted" style="font-size:12px">@${esc(a.handle)}</span></div>
+      ${best ? `<div class="vc-h" style="margin:8px 0 0"><button class="big" data-drill="${esc(best[0])}">${esc(best[0])}</button><span style="text-align:right"><span class="muted" style="font-size:11px;display:block">一年回報</span>${pct(PX[best[0]]?.r1y)}</span></div>
+        <div class="muted" style="font-size:12px">睇好 ${best[1].b} · 總提及 ${best[1].n}</div>` : '<p class="empty">本月冇明確睇好嘅股</p>'}</div>`;
+  }).join('');
+  const rows = G.map(g => { const s = g.bullSig + g.bearSig; return {...g, bp: s ? g.bullSig / s : null, r1y: PX[g.tk]?.r1y ?? null, r28: PX[g.tk]?.r28 ?? null}; });
+  const val = x => x == null ? -1e9 : x;
+  rows.sort((a, b) => (val(a[SORT.key]) - val(b[SORT.key])) * SORT.dir || b.mentions - a.mentions);
+  const th = (k, t) => `<th><button data-sort="${k}" ${SORT.key === k ? `aria-sort="${SORT.dir < 0 ? 'descending' : 'ascending'}"` : ''}>${t}${SORT.key === k ? (SORT.dir < 0 ? ' ↓' : ' ↑') : ''}</button></th>`;
+  const accRows = ACCS.map(a => {
+    const mine = ops.filter(o => o.handle === a.handle), c = consistency(mine);
+    return `<tr><td><strong>${esc(a.name)}</strong> <span class="muted">@${esc(a.handle)}</span></td><td class="num">${mine.length}</td>
+      <td class="num">${new Set(mine.map(o => o.ticker)).size}</td><td class="num">${c == null ? '<span class="muted">樣本不足</span>' : Math.round(c * 100) + '%'}</td>
+      <td class="num">${flips.filter(x => x.o.handle === a.handle).length}</td></tr>`;
+  }).join('');
+  $('view').innerHTML = `
+    <h2>近 28 日<span class="n">${md(NOW - 28 * DAY)}–${md(NOW)}</span></h2>
+    <div class="grid g4">${stat('總提及', ops.length)}${stat('睇好', `<span class="up">${bullN}</span>`)}${stat('睇淡', `<span class="down">${bearN}</span>`)}${stat('睇好比例', bullN + bearN ? Math.round(bullN / (bullN + bearN) * 100) + '%' : '—')}</div>
+    <h2>每個帳號本月最睇好嘅股<span class="n">按明確睇好次數排，再睇總提及同最近一次</span></h2>
+    <div class="grid g4">${tops}</div>
+    <h2>股票總表<span class="n">撳表頭排序</span></h2>
+    ${rows.length ? `<div class="scroll"><table><thead><tr><th>股票</th>${th('bp', '多空比例')}${th('r1y', '一年回報')}${th('r28', '28 日回報')}${th('mentions', '提及')}${th('bullSig', '睇好')}${th('bearSig', '睇淡')}</tr></thead><tbody>${rows.map(g => `<tr>
+      <td>${tkBtn(g.tk)}</td>
+      <td>${g.bp == null ? '<span class="muted">只有提及</span>' : `<div class="split"><div class="bar"><i class="b" style="width:${g.bp * 100}%"></i><i class="r" style="width:${(1 - g.bp) * 100}%"></i></div><div class="lbl"><span class="up">${Math.round(g.bp * 100)}% 睇好</span><span class="down">${Math.round((1 - g.bp) * 100)}% 睇淡</span></div></div>`}</td>
+      <td>${pct(g.r1y)}</td><td>${pct(g.r28)}</td><td class="num">${g.mentions}</td><td class="num up">${g.bullSig}</td><td class="num down">${g.bearSig}</td></tr>`).join('')}</tbody></table></div>` : '<p class="empty">冇數據。</p>'}
+    <h2>帳號立場一致性<span class="n">同一隻股講過兩次以上，立場有幾一致；反轉＝睇好同睇淡之間轉換</span></h2>
+    <div class="scroll"><table><thead><tr><th>帳號</th><th>提及</th><th>講過幾多隻</th><th>立場一致性</th><th>反轉</th></tr></thead><tbody>${accRows}</tbody></table></div>
+    <h2>立場變化</h2>${changeList(changes(28))}`;
+}
+
+function priceChart(tk, ops) {
+  const p = PX[tk];
+  if (!p || !p.series || p.series.length < 2) return '<p class="empty">冇股價資料（可能係非美股、ETF 以外嘅代號或者私人公司）。</p>';
+  const at = d => Date.parse(d + 'T21:00:00Z');
+  const S = p.series.map(([d, v]) => ({t: at(d), d, v}));
+  const W = 760, H = 210, L = 50, R = 14, T = 14, B = 26;
+  const lo = Math.min(...S.map(s => s.v)), hi = Math.max(...S.map(s => s.v)), pad = (hi - lo) * .1 || hi * .02;
+  const y0 = lo - pad, y1 = hi + pad, t0 = S[0].t, t1 = S[S.length - 1].t;
+  const X = t => L + (t - t0) / (t1 - t0 || 1) * (W - L - R), Y = v => T + (1 - (v - y0) / (y1 - y0)) * (H - T - B);
+  const line = S.map((s, i) => `${i ? 'L' : 'M'}${X(s.t).toFixed(1)},${Y(s.v).toFixed(1)}`).join('');
+  const ticks = [y0 + (y1 - y0) * .15, (y0 + y1) / 2, y1 - (y1 - y0) * .15];
+  const byDay = {};
+  for (const o of ops) { const d = new Date(o.ts).toISOString().slice(0, 10); if (at(d) >= t0 - DAY) (byDay[d] ??= []).push(o); }
+  const marks = Object.entries(byDay).map(([d, os]) => {
+    const near = S.reduce((best, s) => Math.abs(s.t - at(d)) < Math.abs(best.t - at(d)) ? s : best, S[0]);
+    const b = os.filter(o => o.stance === 'bull').length, r = os.filter(o => o.stance === 'bear').length;
+    const col = b > r ? 'var(--bull)' : r > b ? 'var(--bear)' : 'var(--neu)';
+    return `<circle cx="${X(near.t).toFixed(1)}" cy="${Y(near.v).toFixed(1)}" r="5.5" fill="var(--surface)" stroke="${col}" stroke-width="2.5"><title>${d}：${esc(os.map(o => nm(o.handle) + ' ' + LABEL[o.stance]).join('、'))}</title></circle>`;
+  }).join('');
+  const mid = S[Math.floor(S.length / 2)];
+  const fmt = v => v >= 100 ? v.toFixed(0) : v.toFixed(2);
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(tk)} 近 28 日收市價">
+    ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`).join('')}
+    <path d="${line}L${X(t1).toFixed(1)},${H - B}L${L},${H - B}Z" fill="var(--chip)" stroke="none"/>
+    <path d="${line}" fill="none" stroke="var(--ink-2)" stroke-width="1.8" stroke-linejoin="round"/>
+    <circle cx="${X(t1).toFixed(1)}" cy="${Y(S[S.length - 1].v).toFixed(1)}" r="3" fill="var(--ink)"/>
+    ${marks}
+    <text x="${L}" y="${H - 6}">${S[0].d.slice(5)}</text><text x="${X(mid.t).toFixed(1)}" y="${H - 6}" text-anchor="middle">${mid.d.slice(5)}</text><text x="${W - R}" y="${H - 6}" text-anchor="end">${S[S.length - 1].d.slice(5)}</text>
+  </svg><div class="muted" style="font-size:12px">圓圈＝嗰日有帳號發表觀點（綠＝睇好多、紅＝睇淡多、灰＝中性）；滑鼠停喺圓圈睇邊個。</div></div>`;
+}
+
+function renderDrill() {
+  if (!DRILL) { $('drill').innerHTML = ''; return; }
+  const tk = DRILL, p = PX[tk], allT = OPS.filter(o => o.ticker === tk);
+  const win = between(NOW - DRILL_W * DAY, NOW).filter(o => o.ticker === tk);
+  const per = {}; for (const o of win) (per[o.handle] ??= []).push(o);
+  const GA = {bullOnly: [], bearOnly: [], mixed: [], unclear: [], none: []};
+  for (const a of ACCS) {
+    const os = per[a.handle];
+    if (!os) { GA.none.push(a); continue; }
+    const hb = os.some(o => o.stance === 'bull'), hr = os.some(o => o.stance === 'bear');
+    (hb && hr ? GA.mixed : hb ? GA.bullOnly : hr ? GA.bearOnly : GA.unclear).push(a);
+  }
+  const seg = [['bullOnly', '只睇好', 'b'], ['bearOnly', '只睇淡', 'r'], ['mixed', '好淡都有', 'n'], ['unclear', '唔明確', 'n'], ['none', '冇提及', 'x']];
+  const rows = ACCS.filter(a => per[a.handle]).map(a => {
+    const os = per[a.handle], b = os.filter(o => o.stance === 'bull').length, r = os.filter(o => o.stance === 'bear').length, n = os.length - b - r;
+    const lo = os[os.length - 1], c = consistency(allT.filter(o => o.handle === a.handle));
+    return `<tr><td><strong>${esc(a.name)}</strong></td><td class="num">${os.length}</td><td class="num up">${b}</td>
+      <td><div class="bar" style="width:90px"><i class="b" style="width:${b / os.length * 100}%"></i><i class="n" style="width:${n / os.length * 100}%"></i><i class="r" style="width:${r / os.length * 100}%"></i></div></td>
+      <td class="num down">${r}</td><td class="num">${c == null ? '<span class="muted">—</span>' : Math.round(c * 100) + '%'}</td>
+      <td class="why"><span class="pill ${lo.stance === 'bull' ? 'bull' : lo.stance === 'bear' ? 'bear' : 'neu'}">${LABEL[lo.stance]}</span> ${md(lo.ts)}：${esc(lo.summary)} ${post(lo)}</td></tr>`;
+  }).join('');
+  const c = D.congress?.[tk];
+  const winRet = (() => { if (!p?.series) return null; const s = p.series.filter(([d]) => Date.parse(d) >= NOW - DRILL_W * DAY - DAY); return s.length >= 2 ? s[s.length - 1][1] / s[0][1] - 1 : null; })();
+  const wLabel = DRILL_W === 1 ? '今日' : `近 ${DRILL_W} 日`;
+  $('drill').innerHTML = `<h2>個股追查<span class="n">喺上面撳任何股票代號就會換</span></h2><div class="box" style="display:grid;gap:18px">
+    <div class="drill-h"><span class="t">${esc(tk)}</span>
+      ${p ? `<span class="px">${p.last} · ${pct(p.r1d)} <span class="muted">今日</span> · ${pct(p.r28)} <span class="muted">28 日</span> · ${pct(p.r1y)} <span class="muted">一年</span></span>` : ''}
+      <span class="seg" style="margin-left:auto" role="group" aria-label="追查時間範圍">${[[1, '今日'], [7, '近 7 日'], [28, '近 28 日']].map(([w, t]) => `<button data-dw="${w}" aria-pressed="${w === DRILL_W}">${t}</button>`).join('')}</span></div>
+    <div><h3 style="margin-bottom:6px">股價走勢 <span class="muted" style="font-weight:400">近 28 日收市價</span></h3>${priceChart(tk, allT)}</div>
+    <div style="display:grid;gap:8px"><h3>${ACCS.length} 個帳號觀點 <span class="muted" style="font-weight:400">${wLabel}</span></h3>
+      <div class="bar" style="height:10px">${seg.map(([k, , cls]) => GA[k].length ? `<i class="${cls}" style="width:${GA[k].length / ACCS.length * 100}%"></i>` : '').join('')}</div>
+      <div class="stance-groups">${seg.map(([k, t]) => `<span class="g"><span class="muted">${GA[k].length} 人${t}</span>${k !== 'none' ? GA[k].map(a => `<span class="chipn">${esc(a.name)}</span>`).join('') : ''}</span>`).join('')}</div></div>
+    <div class="grid g4">${stat('參與帳號', Object.keys(per).length)}${stat('提及', win.length)}${stat('睇好訊號', `<span class="up">${win.filter(o => o.stance === 'bull').length}</span>`)}${stat('同期股價', winRet == null ? '<span class="muted">—</span>' : pct(winRet))}</div>
+    <div><h3 style="margin-bottom:6px">帳號明細 <span class="muted" style="font-weight:400">${wLabel}；冇提及嘅帳號唔當中性</span></h3>
+      ${rows ? `<div class="scroll"><table><thead><tr><th>帳號</th><th>提及</th><th>睇好</th><th>立場組合</th><th>睇淡</th><th>立場一致性</th><th>最新觀點同理由</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="empty">呢段時間冇帳號講過呢隻股，試下揀長啲嘅時間範圍。</p>'}</div>
+    <div><h3 style="margin-bottom:6px">觀點演變 <span class="muted" style="font-weight:400">全部 ${allT.length} 條，新到舊</span></h3>
+      <ul class="tl">${allT.slice().reverse().map(o => `<li><span class="muted num">${md(o.ts)}</span><strong>${esc(nm(o.handle))}</strong>
+        <span><span class="pill ${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'neu'}">${LABEL[o.stance]}${o.stance !== 'neutral' ? ' ' + '●'.repeat(o.strength) : ''}</span> ${esc(o.summary)} ${post(o)}</span></li>`).join('')}</ul></div>
+    ${c ? `<div class="muted" style="font-size:12.5px">國會議員申報（近 90 日）：<span class="up">買 ${c.b}</span> / <span class="down">賣 ${c.s}</span>（${esc(c.people.slice(0, 4).join('、'))}${c.people.length > 4 ? '…' : ''}）</div>` : ''}
+  </div>`;
 }
 
 function render() {
-  const ops = inWin();
-  const rows = board(ops);
-  const chg = changes();
-  const active = new Set(ops.map(o => o.handle));
-  const stances = ops.filter(o => o.stance !== 'neutral');
-  $('seg').innerHTML = D.windows.map(w => `<button aria-pressed="${w === W}" data-w="${w}">${w === 1 ? '24 小時' : w + ' 日'}</button>`).join('');
-  $('cards').innerHTML = [
-    ['有發言嘅帳號', `${active.size} / ${D.accounts.length}`],
-    ['講到嘅股票', rows.length],
-    ['睇好 / 睇淡表態', `<span style="color:var(--bull)">${stances.filter(o => o.stance === 'bull').length}</span> / <span style="color:var(--bear)">${stances.filter(o => o.stance === 'bear').length}</span>`],
-    ['立場轉變', chg.filter(c => c.kind !== '新表態').length],
-  ].map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
-
-  $('board-n').textContent = `${rows.length} 隻`;
-  $('board-body').innerHTML = rows.length ? `<div class="scroll"><table><thead><tr>
-    <th>股票</th><th>共識</th><th>睇好 · 中性 · 睇淡</th><th>邊個</th><th>國會申報</th><th></th></tr></thead><tbody>${
-    rows.slice(0, 30).map(r => {
-      const n = r.L.length;
-      const who = r.L.sort((a, b) => ({bull: 0, neutral: 1, bear: 2}[a.stance] - {bull: 0, neutral: 1, bear: 2}[b.stance]))
-        .map(o => `<span style="color:var(--${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'muted'})">${esc(name(o.handle))}</span>`).join('、');
-      return `<tr><td class="tick">${esc(r.tk)}</td><td><span class="pill ${r.cls}">${r.label}</span></td>
-        <td><span class="barwrap"><span class="bar" aria-hidden="true"><i class="b" style="width:${r.bull / n * 100}%"></i><i class="n" style="width:${r.neu / n * 100}%"></i><i class="r" style="width:${r.bear / n * 100}%"></i></span>${r.bull} · ${r.neu} · ${r.bear}</span></td>
-        <td class="who">${who}</td><td>${cong(r.tk)}</td>
-        <td><button class="link-btn" data-drill="${esc(r.tk)}">追查</button></td></tr>`;
-    }).join('')}</tbody></table></div>` : '<p class="empty">呢段時間冇帳號講過個股。</p>';
-
-  $('changes-n').textContent = `轉變 ${chg.filter(c => c.kind !== '新表態').length} · 新表態 ${chg.filter(c => c.kind === '新表態').length}`;
-  $('changes-body').innerHTML = chg.length ? `<div class="changes">${chg.slice(0, 20).map(c => `
-    <div class="chg"><span class="kind ${c.cls}">${c.kind}</span>
-      <span class="line"><strong>${esc(name(c.o.handle))}</strong> · <span class="tick">${esc(c.o.ticker)}</span> ·
-        ${c.p ? `${LABEL[c.p.stance]}${c.p.stance !== 'neutral' ? '(' + c.p.strength + ')' : ''} → ` : ''}${LABEL[c.o.stance]}${c.o.stance !== 'neutral' ? '(' + c.o.strength + ')' : ''}</span>
-      <span class="sub">${day(c.o.ts)}：${esc(c.o.summary)} <a href="${tweet(c.o)}" target="_blank" rel="noopener">帖文</a></span></div>`).join('')}</div>`
-    : '<p class="empty">呢段時間冇帳號改變立場。</p>';
-
-  $('accts').innerHTML = D.accounts.map(a => {
-    const mine = ops.filter(o => o.handle === a.handle).slice().reverse();
-    const checked = D.checked[a.handle];
-    return `<div class="acct"><div class="acct-h"><a href="https://x.com/${esc(a.handle)}" target="_blank" rel="noopener">${esc(a.name)}</a>
-      <span class="muted">${mine.length} 條立場</span></div>
-      <div class="desc">@${esc(a.handle)} · ${esc(a.note || '')}${checked ? ' · 最後檢查 ' + day(Date.parse(checked)) : ''}</div>
-      ${mine.length ? `<ul>${mine.slice(0, 5).map(o => `<li><span class="pill ${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'neu'}">${esc(o.ticker)} ${LABEL[o.stance]}</span><span>${esc(o.summary)}</span></li>`).join('')}</ul>`
-        : '<div class="empty">呢段時間冇講過個股</div>'}</div>`;
-  }).join('');
-}
-
-function drillOptions() {
-  const cnt = {};
-  for (const o of OPS) cnt[o.ticker] = (cnt[o.ticker] || 0) + 1;
-  const tks = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a] || a.localeCompare(b));
-  $('drill-sel').innerHTML = tks.map(t => `<option value="${esc(t)}">${esc(t)}（${cnt[t]}）</option>`).join('');
-  return tks;
-}
-
-function drill(tk) {
-  $('drill-sel').value = tk;
-  const ops = OPS.filter(o => o.ticker === tk).slice().reverse();
-  const c = D.congress[tk];
-  $('drill-sum').innerHTML = `<span class="muted">全部 ${ops.length} 條立場</span>` +
-    (c ? ` · 國會申報近 90 日 <span class="cong"><span class="b">買 ${c.b}</span> / <span class="s">賣 ${c.s}</span></span><span class="muted">（${esc(c.people.slice(0, 3).join('、'))}${c.people.length > 3 ? '…' : ''}）</span>` : '');
-  $('drill-body').innerHTML = ops.map(o => `<li><span class="d">${day(o.ts)}</span>
-    <span class="h">${esc(name(o.handle))}</span>
-    <span class="s"><span class="pill ${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'neu'}">${LABEL[o.stance]}${o.stance !== 'neutral' ? ' ' + '●'.repeat(o.strength) : ''}</span>
-    ${esc(o.summary)}<a href="${tweet(o)}" target="_blank" rel="noopener">帖文</a></span></li>`).join('');
+  $('views').innerHTML = [['today', '今日'], ['week', '近 7 日'], ['month', '近 28 日']].map(([v, t]) => `<button data-view="${v}" aria-pressed="${v === VIEW}">${t}</button>`).join('');
+  ({today: renderToday, week: renderWeek, month: renderMonth})[VIEW]();
+  renderDrill();
 }
 
 document.addEventListener('click', e => {
-  const w = e.target.closest('[data-w]');
-  if (w) { W = +w.dataset.w; render(); return; }
-  const d = e.target.closest('[data-drill]');
-  if (d) { drill(d.dataset.drill); $('drill').scrollIntoView({behavior: 'smooth'}); }
+  const t = e.target.closest('[data-view],[data-drill],[data-dw],[data-sort]');
+  if (!t) return;
+  if (t.dataset.view) { VIEW = t.dataset.view; render(); }
+  else if (t.dataset.drill) { DRILL = t.dataset.drill; renderDrill(); $('drill').scrollIntoView({behavior: 'smooth', block: 'start'}); }
+  else if (t.dataset.dw) { DRILL_W = +t.dataset.dw; renderDrill(); }
+  else if (t.dataset.sort) { SORT = {key: t.dataset.sort, dir: SORT.key === t.dataset.sort ? -SORT.dir : -1}; renderMonth(); }
 });
-$('drill-sel').addEventListener('change', e => drill(e.target.value));
 
-$('stamp').textContent = `更新：${new Date(NOW).toLocaleString('zh-HK', {timeZone: 'America/Los_Angeles', hour12: false})} PT · ${D.accounts.length} 個帳號 · ${OPS.length} 條立場`;
+$('stamp').textContent = `資料截至 ${new Date(NOW).toLocaleString('zh-HK', {timeZone: 'America/Los_Angeles', hour12: false, month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})} PT · 追蹤 ${ACCS.length} 個帳號`;
+const topG = groups(between(NOW - 7 * DAY, NOW)).sort((a, b) => b.L.length - a.L.length || b.mentions - a.mentions)[0];
+DRILL = topG ? topG.tk : null;
 render();
-const tks = drillOptions();
-const top = board(inWin())[0];
-if (tks.length) drill(top ? top.tk : tks[0]);
 
-// ── 問 AI：只喺 claude.ai 入面有；其他地方收埋 ──────────────
 (async () => {
   if (!window.claude?.use) return;
   const sample = await window.claude.use('sample');
   if (!sample) return;
-  $('ask-sec').hidden = false; $('toc-ask').hidden = false;
+  $('ask-sec').hidden = false;
   const q = $('ask-q'), go = $('ask-go'), stop = $('ask-stop'), out = $('ask-out');
   let ctl = null, blocked = false;
   const COPY = {not_granted: '你冇批准使用 Claude，所以答唔到。', rate_limited: '問得太密，等一陣再試。',
-    prompt_too_large: '資料太多，試下揀細啲嘅時間範圍再問。', sampling_disabled: '呢個帳戶用唔到 AI 問答。'};
+    prompt_too_large: '資料太多，暫時答唔到。', sampling_disabled: '呢個帳戶用唔到 AI 問答。'};
   async function ask(question) {
-    if (!question.trim()) return;
-    const ops = inWin();
-    const lines = ops.map(o => `${new Date(o.ts).toISOString().slice(0, 10)} @${o.handle}(${name(o.handle)}) ${o.ticker} ${LABEL[o.stance]}${o.stance !== 'neutral' ? '強度' + o.strength : ''}：${o.summary}`);
-    const cg = board(ops).slice(0, 25).map(r => `${r.tk}: ${r.label}（睇好${r.bull} 中性${r.neu} 睇淡${r.bear}）${D.congress[r.tk] ? ` 國會近90日 買${D.congress[r.tk].b} 賣${D.congress[r.tk].s}` : ''}`);
-    const prompt = `你係一個整理 X（Twitter）交易員觀點嘅助手。只可以根據下面資料答，資料冇講嘅就直接話冇資料。
-用廣東話、簡潔答。提到觀點時註明係邊個帳號、幾時講。唔好畀任何買賣建議、目標價或者「值得買」之類評價。
+    if (!question.trim() || blocked) return;
+    const ops = between(NOW - 28 * DAY, NOW);
+    const lines = ops.map(o => `${new Date(o.ts).toISOString().slice(0, 10)} ${nm(o.handle)}(@${o.handle}) ${o.ticker} ${LABEL[o.stance]}${o.stance !== 'neutral' ? '強度' + o.strength : ''}：${o.summary}`);
+    const px = Object.entries(PX).map(([t, v]) => `${t}: 今日${(v.r1d * 100).toFixed(1)}% 28日${v.r28 == null ? '—' : (v.r28 * 100).toFixed(1) + '%'} 一年${v.r1y == null ? '—' : (v.r1y * 100).toFixed(1) + '%'}`);
+    const an = Object.entries(D.analyses || {}).slice(-3).map(([d, t]) => `${d}：${t}`);
+    const prompt = `你係整理 X 交易員觀點嘅研究助手。只可以根據下面資料答；資料冇嘅就講冇，唔好估。
+優先做跨帳號比較（邊個睇好、邊個睇淡、理由點唔同），唔好淨係數提及次數。
+分三層睇：而家立場（每個帳號最新表態同理由）、近期變化（加強／減弱／反轉）、歷史背景（以前講過嘅點解釋而家）。
+如果只有少數帳號講過，要講明證據有限；冇提過嘅帳號唔可以當中性。
+用廣東話、簡潔答，註明邊個帳號幾時講。唔好畀買賣建議、目標價或者「值得買」之類評價。
 
-時間範圍：最近 ${W} 日（截至 ${D.generated.slice(0, 10)}）
+追蹤帳號：${ACCS.map(a => `${a.name}(@${a.handle}，${TYPE[a.type] || ''})`).join('、')}
+資料截至：${D.generated}
 
-【共識榜】
-${cg.join('\n') || '（冇）'}
-
-【逐條立場】
+【近 28 日逐條觀點】
 ${lines.join('\n') || '（冇）'}
+
+【股價】
+${px.join('\n') || '（冇）'}
+
+【每日分析】
+${an.join('\n') || '（冇）'}
 
 問題：${question}`;
     ctl = new AbortController();
@@ -373,14 +498,12 @@ ${lines.join('\n') || '（冇）'}
       out.textContent = e.text || '';
       if (e.code !== 'cancelled') out.textContent += (out.textContent ? '\n\n' : '') + (COPY[e.code] || '暫時答唔到，稍後再試。');
       if (e.code === 'not_granted' || e.code === 'sampling_disabled') blocked = true;
-    } finally {
-      go.disabled = blocked; stop.hidden = true;
-    }
+    } finally { go.disabled = blocked; stop.hidden = true; }
   }
   go.onclick = () => ask(q.value);
   stop.onclick = () => ctl?.abort();
   q.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) ask(q.value); });
-  document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { q.value = b.dataset.q; ask(b.dataset.q); });
+  document.querySelectorAll('#ask-sec [data-q]').forEach(b => b.onclick = () => { q.value = b.dataset.q; ask(b.dataset.q); });
 })();
 })();
 </script>
