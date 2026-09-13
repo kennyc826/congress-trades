@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title>X 交易員共識</title>
+<style>
+:root {
+  color-scheme: light;
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink-2:#52514e;
+  --muted:#898781; --line:#e1e0d9; --border:rgba(11,11,11,.10);
+  --bull:#006300; --bear:#d03b3b; --neu:#9a9890; --accent:#2a78d6;
+  --chip:rgba(11,11,11,.05); --chip-on:#0b0b0b; --chip-on-ink:#fcfcfb;
+  --bull-soft:rgba(0,99,0,.10); --bear-soft:rgba(208,59,59,.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7;
+    --muted:#898781; --line:#2c2c2a; --border:rgba(255,255,255,.10);
+    --bull:#0ca30c; --bear:#e0544f; --neu:#6f6e68; --accent:#3987e5;
+    --chip:rgba(255,255,255,.07); --chip-on:#fff; --chip-on-ink:#1a1a19;
+    --bull-soft:rgba(12,163,12,.16); --bear-soft:rgba(224,84,79,.16);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink-2:#c3c2b7;
+  --muted:#898781; --line:#2c2c2a; --border:rgba(255,255,255,.10);
+  --bull:#0ca30c; --bear:#e0544f; --neu:#6f6e68; --accent:#3987e5;
+  --chip:rgba(255,255,255,.07); --chip-on:#fff; --chip-on-ink:#1a1a19;
+  --bull-soft:rgba(12,163,12,.16); --bear-soft:rgba(224,84,79,.16);
+}
+* { box-sizing:border-box; }
+body { margin:0; padding:24px 18px 64px; background:var(--page); color:var(--ink);
+  font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;
+  font-size:14px; line-height:1.5; }
+.wrap { max-width:1120px; margin:0 auto; }
+header { display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 20px; margin-bottom:6px; }
+h1 { font-size:20px; margin:0; font-weight:650; letter-spacing:-.01em; }
+.stamp { color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
+h2 { font-size:15px; margin:34px 0 10px; font-weight:620; scroll-margin-top:12px; text-wrap:balance; }
+h2 .n { color:var(--muted); font-weight:400; font-size:13px; margin-left:6px; }
+.note { color:var(--muted); font-size:12.5px; margin:-4px 2px 10px; max-width:70ch; }
+.seg { display:inline-flex; background:var(--chip); border:1px solid var(--border);
+  border-radius:9px; padding:3px; gap:2px; margin-left:auto; }
+.seg button { font:inherit; font-size:13px; border:0; background:transparent; color:var(--ink-2);
+  padding:5px 12px; border-radius:6px; cursor:pointer; font-variant-numeric:tabular-nums; }
+.seg button[aria-pressed="true"] { background:var(--chip-on); color:var(--chip-on-ink); font-weight:600; }
+button:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline:2px solid var(--accent); outline-offset:2px; }
+.cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:18px 0 4px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
+.card .k { color:var(--muted); font-size:12px; }
+.card .v { font-size:22px; font-weight:640; font-variant-numeric:tabular-nums; letter-spacing:-.02em; margin-top:2px; }
+nav.toc { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 0; }
+nav.toc a { font-size:12.5px; text-decoration:none; background:var(--chip);
+  border:1px solid var(--border); border-radius:999px; padding:3px 10px; color:var(--ink-2); }
+.scroll { overflow-x:auto; -webkit-overflow-scrolling:touch;
+  border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:middle; }
+th { color:var(--muted); font-weight:560; font-size:12px; white-space:nowrap; }
+tr:last-child td { border-bottom:0; }
+td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tick { font-weight:650; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.muted { color:var(--muted); }
+.pill { display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:999px;
+  white-space:nowrap; border:1px solid transparent; }
+.pill.bull { color:var(--bull); background:var(--bull-soft); }
+.pill.bear { color:var(--bear); background:var(--bear-soft); }
+.pill.split { color:var(--ink); background:var(--chip); border-color:var(--border); }
+.pill.neu { color:var(--muted); background:var(--chip); }
+.bar { display:flex; height:8px; width:120px; border-radius:4px; overflow:hidden; background:var(--chip); }
+.bar i { display:block; height:100%; }
+.bar .b { background:var(--bull); } .bar .n { background:var(--neu); } .bar .r { background:var(--bear); }
+.barwrap { display:flex; align-items:center; gap:8px; white-space:nowrap; font-variant-numeric:tabular-nums; font-size:12px; }
+.who { color:var(--ink-2); font-size:12.5px; min-width:180px; }
+.link-btn { font:inherit; font-size:12.5px; background:none; border:1px solid var(--border); color:var(--ink-2);
+  border-radius:6px; padding:2px 8px; cursor:pointer; white-space:nowrap; }
+.link-btn:hover { background:var(--chip); }
+.cong { font-size:12px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.cong .b { color:var(--bull); font-weight:600; } .cong .s { color:var(--bear); font-weight:600; }
+.changes { display:grid; gap:8px; }
+.chg { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; background:var(--surface);
+  border:1px solid var(--border); border-radius:10px; padding:10px 14px; align-items:baseline; }
+.chg .kind { font-size:12px; font-weight:650; white-space:nowrap; }
+.chg .kind.up { color:var(--bull); } .chg .kind.down { color:var(--bear); } .chg .kind.flip { color:var(--accent); }
+.chg .line { font-size:13.5px; }
+.chg .sub { grid-column:2; color:var(--muted); font-size:12.5px; }
+.drill { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.drill-top { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:12px; }
+select { font:inherit; font-size:14px; padding:5px 8px; border-radius:7px; border:1px solid var(--border);
+  background:var(--page); color:var(--ink); }
+.timeline { list-style:none; margin:0; padding:0; display:grid; gap:0; }
+.timeline li { display:grid; grid-template-columns:92px 132px 1fr; gap:10px; padding:9px 0;
+  border-top:1px solid var(--line); align-items:baseline; }
+.timeline li:first-child { border-top:0; }
+.timeline .d { color:var(--muted); font-size:12.5px; font-variant-numeric:tabular-nums; }
+.timeline .h { font-size:13px; font-weight:600; }
+.timeline .s { font-size:13.5px; max-width:70ch; }
+.timeline a { color:var(--muted); font-size:12px; margin-left:6px; }
+.accts { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+.acct { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
+.acct-h { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+.acct-h a { font-weight:640; color:var(--ink); text-decoration:none; }
+.acct-h .muted { font-size:12px; white-space:nowrap; }
+.acct .desc { color:var(--muted); font-size:12px; margin:1px 0 8px; }
+.acct ul { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
+.acct li { font-size:12.5px; display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:baseline; }
+.acct .empty { color:var(--muted); font-size:12.5px; }
+.ask { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.ask textarea { width:100%; min-height:64px; font:inherit; font-size:14px; padding:9px 11px; border-radius:8px;
+  border:1px solid var(--border); background:var(--page); color:var(--ink); resize:vertical; }
+.ask .row { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; align-items:center; }
+.ask .row button { font:inherit; font-size:13px; padding:6px 14px; border-radius:7px; cursor:pointer;
+  border:1px solid var(--border); background:var(--chip); color:var(--ink); }
+.ask .row button.primary { background:var(--chip-on); color:var(--chip-on-ink); border-color:transparent; font-weight:600; }
+.ask .row button:disabled { opacity:.5; cursor:default; }
+.ask .sugg { font-size:12.5px; }
+.ask .out { white-space:pre-wrap; margin-top:12px; font-size:14px; max-width:75ch; }
+.ask .out:empty { display:none; }
+.empty { color:var(--muted); padding:12px 2px; }
+footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; }
+footer p { max-width:80ch; margin:6px 0; }
+footer strong { color:var(--ink-2); }
+@media (max-width:620px) {
+  .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .timeline li { grid-template-columns:1fr; gap:2px; }
+  .seg { margin-left:0; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>X 交易員共識</h1>
+    <div class="stamp" id="stamp"></div>
+  </div>
+  <div class="seg" role="group" aria-label="時間範圍" id="seg"></div>
+</header>
+<div class="cards" id="cards"></div>
+<nav class="toc">
+  <a href="#board">共識榜</a><a href="#changes">立場變化</a><a href="#drill">個股追查</a>
+  <a href="#accounts">帳號</a><a href="#ask" id="toc-ask" hidden>問 AI</a>
+</nav>
+
+<h2 id="board">共識榜<span class="n" id="board-n"></span></h2>
+<p class="note">每個帳號只計窗口內對該股嘅<strong>最新</strong>立場。排序：有表態（睇好或睇淡）嘅帳號數優先。
+「國會申報」係近 90 日議員申報買入／賣出筆數。</p>
+<div id="board-body"></div>
+
+<h2 id="changes">立場變化<span class="n" id="changes-n"></span></h2>
+<p class="note">同一個帳號對同一隻股，同佢上一次講法比較。</p>
+<div id="changes-body"></div>
+
+<h2 id="drill">個股追查</h2>
+<div class="drill">
+  <div class="drill-top">
+    <label>股票 <select id="drill-sel"></select></label>
+    <span id="drill-sum"></span>
+  </div>
+  <ul class="timeline" id="drill-body"></ul>
+</div>
+
+<h2 id="accounts">帳號<span class="n">追蹤緊嘅 10 個</span></h2>
+<div class="accts" id="accts"></div>
+
+<section id="ask-sec" hidden>
+  <h2 id="ask">問 AI<span class="n">根據本頁資料作答</span></h2>
+  <div class="ask">
+    <textarea id="ask-q" placeholder="例如：邊隻股最多人睇好？佢哋嘅理由係乜？"></textarea>
+    <div class="row">
+      <button class="primary" id="ask-go">問</button>
+      <button id="ask-stop" hidden>停止</button>
+      <span class="muted sugg">試下：</span>
+      <button class="link-btn" data-q="總結今期最一致嘅觀點同最大分歧">總結共識同分歧</button>
+      <button class="link-btn" data-q="有冇帳號改變咗立場？分別係點改？">邊個轉咗軚</button>
+    </div>
+    <div class="out" id="ask-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>點計</strong>：由 Claude 閱讀 10 個公開 X 帳號嘅原創帖文（唔計轉推），逐條判斷對個股係睇好、睇淡定中性，
+     強度 1–3。摘要係意譯，唔係原文；撳「帖文」睇原句。訂閱者專屬帖文只睇到開頭。</p>
+  <p><strong>要留意</strong>：帳號講乜唔等於佢有落注；「一致睇好」只代表呢幾個人講法一致，唔代表會升。
+     揀邊 10 個帳號本身已經有偏向。</p>
+  <p><strong>免責</strong>：公開資訊整理，唔係投資建議。</p>
+</footer>
+</div>
+<script type="application/json" id="data">{"generated": "2026-09-13T21:15:34Z", "windows": [1, 7, 30], "accounts": [{"handle": "aleabitoreddit", "name": "Serenity", "note": "AI／半導體供應鏈研究"}, {"handle": "Beth_Kindig", "name": "Beth Kindig", "note": "I/O Fund 科技股分析"}, {"handle": "StockSavvyShay", "name": "Shay Boloor", "note": "Futurum Equities 首席策略師"}, {"handle": "amitisinvesting", "name": "amit", "note": "科技成長股"}, {"handle": "CathieDWood", "name": "Cathie Wood", "note": "ARK Invest 創辦人"}, {"handle": "7LukeHallard", "name": "Luke Hallard", "note": "投資人、Podcast 主持"}, {"handle": "IvanaSpear", "name": "Ivana Spear", "note": "Spear Alpha ETF 基金經理"}, {"handle": "fundstrat", "name": "Tom Lee", "note": "Fundstrat 策略師"}, {"handle": "markminervini", "name": "Mark Minervini", "note": "動能交易"}, {"handle": "alphatrends", "name": "Brian Shannon", "note": "技術分析"}], "checked": {"aleabitoreddit": "2026-09-13T20:57:00Z", "Beth_Kindig": "2026-09-13T21:00:00Z", "StockSavvyShay": "2026-09-13T21:30:00Z", "amitisinvesting": "2026-09-13T21:35:00Z", "CathieDWood": "2026-09-13T21:36:00Z", "7LukeHallard": "2026-09-13T21:40:00Z", "IvanaSpear": "2026-09-13T21:41:00Z", "fundstrat": "2026-09-13T21:02:00Z", "markminervini": "2026-09-13T21:03:00Z", "alphatrends": "2026-09-13T21:10:00Z"}, "opinions": [{"id": "2097407631442719101", "handle": "Beth_Kindig", "time": "2026-09-08T19:32Z", "ticker": "DELL", "stance": "neutral", "strength": 1, "summary": "引述 Dell：DRAM、NAND 持續短缺，供應鏈處處受限"}, {"id": "2097711607807651950", "handle": "Beth_Kindig", "time": "2026-09-09T15:39Z", "ticker": "NVDA", "stance": "bull", "strength": 2, "summary": "預測 2027 年 NVL72 機櫃產值超過 7,100 億美元，按年升 214%"}, {"id": "2098074456312660169", "handle": "Beth_Kindig", "time": "2026-09-10T15:41Z", "ticker": "TSM", "stance": "bull", "strength": 2, "summary": "8 月收入創新高，按年升 53%，AI 需求強勁"}, {"id": "2098151630801662460", "handle": "Beth_Kindig", "time": "2026-09-10T20:48Z", "ticker": "NVDA", "stance": "bull", "strength": 2, "summary": "Vera Rubin 每 MW 吞吐量係 Blackwell Ultra 50 倍，客戶願意畀更高價"}, {"id": "2098151787962253470", "handle": "Beth_Kindig", "time": "2026-09-10T20:49Z", "ticker": "CRWD", "stance": "bull", "strength": 1, "summary": "AI 引發嘅資料外洩平均成本高兩成，網絡安全需求上升"}, {"id": "2098255098862264725", "handle": "amitisinvesting", "time": "2026-09-11T03:39Z", "ticker": "PLTR", "stance": "bull", "strength": 1, "summary": "NVDA 同 PLTR 擴大 AI 合作"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "AMD", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold（Situational Awareness）買入 AMD 期權，指期權 IV 偏高"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "BE", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 BE 期權"}, {"id": "2098430387693433144", "handle": "aleabitoreddit", "time": "2026-09-11T15:16Z", "ticker": "CRWV", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 買入 CRWV 期權"}, {"id": "2098446675086110936", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "MU", "stance": "bull", "strength": 2, "summary": "MU 前瞻市盈率 7 倍但毛利率係 Dell 三倍，質疑市場點解咁悲觀"}, {"id": "2098446675086110936", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "DELL", "stance": "neutral", "strength": 1, "summary": "拎 DELL 18 倍前瞻市盈率同 MU 比較"}, {"id": "2098446691427119373", "handle": "amitisinvesting", "time": "2026-09-11T16:20Z", "ticker": "SNDK", "stance": "neutral", "strength": 1, "summary": "轉述 Leopold 大手買入 SNDK 等期權"}, {"id": "2098456703930913193", "handle": "IvanaSpear", "time": "2026-09-11T17:00Z", "ticker": "AVGO", "stance": "bull", "strength": 1, "summary": "引述 Hock Tan：閉源前沿模型經濟上可持續，AVGO 押注呢邊"}, {"id": "2098483825802358947", "handle": "StockSavvyShay", "time": "2026-09-11T18:48Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "Tesla Semi 正式進軍歐洲"}, {"id": "2098485857800057311", "handle": "amitisinvesting", "time": "2026-09-11T18:56Z", "ticker": "PLTR", "stance": "bull", "strength": 3, "summary": "AIPCon 之後機構全面看好，目標價上調至 225–250 美元"}, {"id": "2098624139225657431", "handle": "CathieDWood", "time": "2026-09-12T04:05Z", "ticker": "META", "stance": "bull", "strength": 1, "summary": "推介 META 嘅 Muse 可以幫人搵返無人認領嘅錢"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "CEG", "stance": "bull", "strength": 2, "summary": "月度調倉：新開 CEG 試單倉位"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "SPCX", "stance": "bull", "strength": 2, "summary": "繼續加碼 SpaceX 相關持倉"}, {"id": "2098755113330299008", "handle": "7LukeHallard", "time": "2026-09-12T12:46Z", "ticker": "NDIA", "stance": "bear", "strength": 2, "summary": "月度調倉：沽清印度 ETF"}, {"id": "2098760153030086832", "handle": "StockSavvyShay", "time": "2026-09-12T13:06Z", "ticker": "TSLA", "stance": "bull", "strength": 2, "summary": "自稱 TSLA 同 SPCX 嘅「超級粉絲」"}, {"id": "2098760153030086832", "handle": "StockSavvyShay", "time": "2026-09-12T13:06Z", "ticker": "SPCX", "stance": "bull", "strength": 2, "summary": "自稱 SPCX 超級粉絲，但指兩間公司合計盈利偏低"}, {"id": "2098766987874959428", "handle": "StockSavvyShay", "time": "2026-09-12T13:33Z", "ticker": "MU", "stance": "bull", "strength": 1, "summary": "HBM 用量圖表睇落利淡 MU，但認為要睇 Nvidia 背後原因，唔一定係壞事"}, {"id": "2098773005291934163", "handle": "StockSavvyShay", "time": "2026-09-12T13:57Z", "ticker": "CRWV", "stance": "bull", "strength": 1, "summary": "列入 AI 雲十大名單：同 Nvidia 深度整合"}, {"id": "2098773005291934163", "handle": "StockSavvyShay", "time": "2026-09-12T13:57Z", "ticker": "NBIS", "stance": "bull", "strength": 1, "summary": "列入 AI 雲十大名單：自家軟硬件加電力控制"}, {"id": "2098794896375325155", "handle": "StockSavvyShay", "time": "2026-09-12T15:24Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "引述小摩：2035 年 Robotaxi 收入約 3,200 億美元，回報巨大"}, {"id": "2098817448971808810", "handle": "StockSavvyShay", "time": "2026-09-12T16:54Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "Ellison 取消 75 億美元賣股計劃，認為係明智之舉"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "NBIS", "stance": "bull", "strength": 2, "summary": "Oracle 續約 GPU 算力加價 20% 轉售，對 NBIS 呢類 neocloud 係利好"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "IREN", "stance": "bull", "strength": 2, "summary": "同一論點：舊 GPU 仲加價租得出，IREN 受惠"}, {"id": "2099048356345696391", "handle": "aleabitoreddit", "time": "2026-09-13T08:11Z", "ticker": "ORCL", "stance": "bull", "strength": 1, "summary": "話之前睇漏咗 Oracle 業績入面算力續約加價嘅重點"}, {"id": "2099135763766301083", "handle": "StockSavvyShay", "time": "2026-09-13T13:59Z", "ticker": "META", "stance": "bull", "strength": 2, "summary": "Muse 變成「一站式開業工具」，認為係 META 重新估值嘅起點"}, {"id": "2099162181120233820", "handle": "StockSavvyShay", "time": "2026-09-13T15:43Z", "ticker": "TSLA", "stance": "bull", "strength": 1, "summary": "引述大摩：無人駕駛令 Tesla Semi 盈利能力可升 6 倍"}, {"id": "2099171287600095478", "handle": "StockSavvyShay", "time": "2026-09-13T16:20Z", "ticker": "TSLA", "stance": "neutral", "strength": 1, "summary": "表示目前冇揸 TSLA，已經換咗倉（全文訂閱限定）"}, {"id": "2099189974901854656", "handle": "Beth_Kindig", "time": "2026-09-13T17:34Z", "ticker": "TSM", "stance": "bull", "strength": 1, "summary": "Q2 十大晶圓代工收入按季升 11.5%，台積電佔 72.5%"}, {"id": "2099194932682486183", "handle": "Beth_Kindig", "time": "2026-09-13T17:54Z", "ticker": "PLTR", "stance": "bull", "strength": 1, "summary": "PLTR 同 NBIS 合作加快為客戶部署算力"}, {"id": "2099194932682486183", "handle": "Beth_Kindig", "time": "2026-09-13T17:54Z", "ticker": "NBIS", "stance": "bull", "strength": 1, "summary": "NBIS 成為 Palantir 首選主權 AI 基建夥伴"}, {"id": "2099238849369211135", "handle": "StockSavvyShay", "time": "2026-09-13T20:48Z", "ticker": "SPCX", "stance": "bull", "strength": 1, "summary": "Falcon 完成第 700 次任務"}], "congress": {"SPCX": {"b": 7, "s": 0, "people": ["Daniel Meuser", "Gilbert Cisneros", "John McGuire", "Maria Elvira Salazar", "William R. Timmons IV"]}, "AVGO": {"b": 4, "s": 0, "people": ["David J. Taylor", "Richard W. Allen"]}, "AMD": {"b": 2, "s": 2, "people": ["Dan Newhouse", "Gilbert Cisneros", "Richard W. Allen"]}, "CRWD": {"b": 2, "s": 0, "people": ["Gilbert Cisneros", "Josh Gottheimer"]}, "NVDA": {"b": 6, "s": 8, "people": ["Cleo Fields", "Cory A Booker", "Dan Newhouse", "Gilbert Cisneros", "John J Mr McGuire III", "Matthew Robert Van Epps", "Michael Rulli", "Sam T. Liccardo", "Sheldon Whitehouse"]}, "PLTR": {"b": 1, "s": 0, "people": ["Gilbert Cisneros"]}, "BE": {"b": 4, "s": 0, "people": ["Nancy Pelosi"]}, "META": {"b": 2, "s": 2, "people": ["Gilbert Cisneros", "Jared Moskowitz", "Matthew Robert Van Epps"]}, "TSLA": {"b": 0, "s": 1, "people": ["Gilbert Cisneros"]}, "CEG": {"b": 0, "s": 1, "people": ["John Boozman"]}, "MU": {"b": 3, "s": 0, "people": ["Dan Newhouse", "Michael Rulli", "Sheldon Whitehouse"]}, "TSM": {"b": 1, "s": 0, "people": ["Cleo Fields"]}}}</script>
+<script>
+(() => {
+const D = JSON.parse(document.getElementById('data').textContent);
+const NOW = Date.parse(D.generated);
+const ACC = Object.fromEntries(D.accounts.map(a => [a.handle, a]));
+const OPS = D.opinions.map(o => ({...o, ts: Date.parse(o.time)})).sort((a, b) => a.ts - b.ts);
+const LABEL = {bull: '睇好', bear: '睇淡', neutral: '中性'};
+let W = D.windows.includes(7) ? 7 : D.windows[0];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const day = ts => new Date(ts).toLocaleDateString('zh-HK', {month: 'numeric', day: 'numeric', timeZone: 'America/Los_Angeles'});
+const name = h => ACC[h]?.name || h;
+const tweet = o => `https://x.com/${o.handle}/status/${o.id}`;
+const inWin = () => OPS.filter(o => o.ts >= NOW - W * 86400e3);
+
+function board(ops) {
+  const by = {};
+  for (const o of ops) {                       // 時序遞增，後面覆蓋前面 = 最新立場
+    (by[o.ticker] ??= {latest: {}, mentions: 0}).latest[o.handle] = o;
+    by[o.ticker].mentions++;
+  }
+  return Object.entries(by).map(([tk, v]) => {
+    const L = Object.values(v.latest);
+    const bull = L.filter(o => o.stance === 'bull'), bear = L.filter(o => o.stance === 'bear');
+    const neu = L.length - bull.length - bear.length;
+    const score = bull.reduce((s, o) => s + o.strength, 0) - bear.reduce((s, o) => s + o.strength, 0);
+    let label, cls;
+    if (!bull.length && !bear.length) [label, cls] = ['只係提及', 'neu'];
+    else if (bull.length && bear.length) [label, cls] = ['有分歧', 'split'];
+    else if (bull.length >= 2) [label, cls] = ['一致睇好', 'bull'];
+    else if (bear.length >= 2) [label, cls] = ['一致睇淡', 'bear'];
+    else if (bull.length) [label, cls] = ['單一睇好', 'bull'];
+    else [label, cls] = ['單一睇淡', 'bear'];
+    return {tk, L, bull: bull.length, bear: bear.length, neu, score, mentions: v.mentions, label, cls};
+  }).sort((a, b) => (b.bull + b.bear) - (a.bull + a.bear) || Math.abs(b.score) - Math.abs(a.score) || b.mentions - a.mentions);
+}
+
+function changes() {
+  const prev = {}, out = {};
+  const start = NOW - W * 86400e3;
+  for (const o of OPS) {
+    const k = o.handle + '|' + o.ticker, p = prev[k];
+    let kind = null, cls = '';
+    if (!p) { if (o.stance !== 'neutral') [kind, cls] = ['新表態', o.stance === 'bull' ? 'up' : 'down']; }
+    else if (p.stance !== o.stance) {
+      if (p.stance !== 'neutral' && o.stance !== 'neutral') [kind, cls] = ['反轉', 'flip'];
+      else if (o.stance === 'neutral') [kind, cls] = ['轉中性', 'down'];
+      else [kind, cls] = ['表態', o.stance === 'bull' ? 'up' : 'down'];
+    } else if (o.stance !== 'neutral' && o.strength !== p.strength) {
+      [kind, cls] = o.strength > p.strength ? ['加強', o.stance === 'bull' ? 'up' : 'down'] : ['減弱', 'down'];
+    }
+    if (kind && o.ts >= start) out[k] = {o, p, kind, cls};
+    prev[k] = o;
+  }
+  // 真正轉咗軚嘅排前，第一次表態排後 —— 新帳號／新數據一開始全部都係「新表態」
+  return Object.values(out).sort((a, b) => (a.kind === '新表態') - (b.kind === '新表態') || b.o.ts - a.o.ts);
+}
+
+function cong(tk) {
+  const c = D.congress[tk];
+  if (!c) return '<span class="muted">—</span>';
+  return `<span class="cong" title="${esc(c.people.join('、'))}"><span class="b">買 ${c.b}</span> / <span class="s">賣 ${c.s}</span></span>`;
+}
+
+function render() {
+  const ops = inWin();
+  const rows = board(ops);
+  const chg = changes();
+  const active = new Set(ops.map(o => o.handle));
+  const stances = ops.filter(o => o.stance !== 'neutral');
+  $('seg').innerHTML = D.windows.map(w => `<button aria-pressed="${w === W}" data-w="${w}">${w === 1 ? '24 小時' : w + ' 日'}</button>`).join('');
+  $('cards').innerHTML = [
+    ['有發言嘅帳號', `${active.size} / ${D.accounts.length}`],
+    ['講到嘅股票', rows.length],
+    ['睇好 / 睇淡表態', `<span style="color:var(--bull)">${stances.filter(o => o.stance === 'bull').length}</span> / <span style="color:var(--bear)">${stances.filter(o => o.stance === 'bear').length}</span>`],
+    ['立場轉變', chg.filter(c => c.kind !== '新表態').length],
+  ].map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+
+  $('board-n').textContent = `${rows.length} 隻`;
+  $('board-body').innerHTML = rows.length ? `<div class="scroll"><table><thead><tr>
+    <th>股票</th><th>共識</th><th>睇好 · 中性 · 睇淡</th><th>邊個</th><th>國會申報</th><th></th></tr></thead><tbody>${
+    rows.slice(0, 30).map(r => {
+      const n = r.L.length;
+      const who = r.L.sort((a, b) => ({bull: 0, neutral: 1, bear: 2}[a.stance] - {bull: 0, neutral: 1, bear: 2}[b.stance]))
+        .map(o => `<span style="color:var(--${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'muted'})">${esc(name(o.handle))}</span>`).join('、');
+      return `<tr><td class="tick">${esc(r.tk)}</td><td><span class="pill ${r.cls}">${r.label}</span></td>
+        <td><span class="barwrap"><span class="bar" aria-hidden="true"><i class="b" style="width:${r.bull / n * 100}%"></i><i class="n" style="width:${r.neu / n * 100}%"></i><i class="r" style="width:${r.bear / n * 100}%"></i></span>${r.bull} · ${r.neu} · ${r.bear}</span></td>
+        <td class="who">${who}</td><td>${cong(r.tk)}</td>
+        <td><button class="link-btn" data-drill="${esc(r.tk)}">追查</button></td></tr>`;
+    }).join('')}</tbody></table></div>` : '<p class="empty">呢段時間冇帳號講過個股。</p>';
+
+  $('changes-n').textContent = `轉變 ${chg.filter(c => c.kind !== '新表態').length} · 新表態 ${chg.filter(c => c.kind === '新表態').length}`;
+  $('changes-body').innerHTML = chg.length ? `<div class="changes">${chg.slice(0, 20).map(c => `
+    <div class="chg"><span class="kind ${c.cls}">${c.kind}</span>
+      <span class="line"><strong>${esc(name(c.o.handle))}</strong> · <span class="tick">${esc(c.o.ticker)}</span> ·
+        ${c.p ? `${LABEL[c.p.stance]}${c.p.stance !== 'neutral' ? '(' + c.p.strength + ')' : ''} → ` : ''}${LABEL[c.o.stance]}${c.o.stance !== 'neutral' ? '(' + c.o.strength + ')' : ''}</span>
+      <span class="sub">${day(c.o.ts)}：${esc(c.o.summary)} <a href="${tweet(c.o)}" target="_blank" rel="noopener">帖文</a></span></div>`).join('')}</div>`
+    : '<p class="empty">呢段時間冇帳號改變立場。</p>';
+
+  $('accts').innerHTML = D.accounts.map(a => {
+    const mine = ops.filter(o => o.handle === a.handle).slice().reverse();
+    const checked = D.checked[a.handle];
+    return `<div class="acct"><div class="acct-h"><a href="https://x.com/${esc(a.handle)}" target="_blank" rel="noopener">${esc(a.name)}</a>
+      <span class="muted">${mine.length} 條立場</span></div>
+      <div class="desc">@${esc(a.handle)} · ${esc(a.note || '')}${checked ? ' · 最後檢查 ' + day(Date.parse(checked)) : ''}</div>
+      ${mine.length ? `<ul>${mine.slice(0, 5).map(o => `<li><span class="pill ${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'neu'}">${esc(o.ticker)} ${LABEL[o.stance]}</span><span>${esc(o.summary)}</span></li>`).join('')}</ul>`
+        : '<div class="empty">呢段時間冇講過個股</div>'}</div>`;
+  }).join('');
+}
+
+function drillOptions() {
+  const cnt = {};
+  for (const o of OPS) cnt[o.ticker] = (cnt[o.ticker] || 0) + 1;
+  const tks = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a] || a.localeCompare(b));
+  $('drill-sel').innerHTML = tks.map(t => `<option value="${esc(t)}">${esc(t)}（${cnt[t]}）</option>`).join('');
+  return tks;
+}
+
+function drill(tk) {
+  $('drill-sel').value = tk;
+  const ops = OPS.filter(o => o.ticker === tk).slice().reverse();
+  const c = D.congress[tk];
+  $('drill-sum').innerHTML = `<span class="muted">全部 ${ops.length} 條立場</span>` +
+    (c ? ` · 國會申報近 90 日 <span class="cong"><span class="b">買 ${c.b}</span> / <span class="s">賣 ${c.s}</span></span><span class="muted">（${esc(c.people.slice(0, 3).join('、'))}${c.people.length > 3 ? '…' : ''}）</span>` : '');
+  $('drill-body').innerHTML = ops.map(o => `<li><span class="d">${day(o.ts)}</span>
+    <span class="h">${esc(name(o.handle))}</span>
+    <span class="s"><span class="pill ${o.stance === 'bull' ? 'bull' : o.stance === 'bear' ? 'bear' : 'neu'}">${LABEL[o.stance]}${o.stance !== 'neutral' ? ' ' + '●'.repeat(o.strength) : ''}</span>
+    ${esc(o.summary)}<a href="${tweet(o)}" target="_blank" rel="noopener">帖文</a></span></li>`).join('');
+}
+
+document.addEventListener('click', e => {
+  const w = e.target.closest('[data-w]');
+  if (w) { W = +w.dataset.w; render(); return; }
+  const d = e.target.closest('[data-drill]');
+  if (d) { drill(d.dataset.drill); $('drill').scrollIntoView({behavior: 'smooth'}); }
+});
+$('drill-sel').addEventListener('change', e => drill(e.target.value));
+
+$('stamp').textContent = `更新：${new Date(NOW).toLocaleString('zh-HK', {timeZone: 'America/Los_Angeles', hour12: false})} PT · ${D.accounts.length} 個帳號 · ${OPS.length} 條立場`;
+render();
+const tks = drillOptions();
+const top = board(inWin())[0];
+if (tks.length) drill(top ? top.tk : tks[0]);
+
+// ── 問 AI：只喺 claude.ai 入面有；其他地方收埋 ──────────────
+(async () => {
+  if (!window.claude?.use) return;
+  const sample = await window.claude.use('sample');
+  if (!sample) return;
+  $('ask-sec').hidden = false; $('toc-ask').hidden = false;
+  const q = $('ask-q'), go = $('ask-go'), stop = $('ask-stop'), out = $('ask-out');
+  let ctl = null, blocked = false;
+  const COPY = {not_granted: '你冇批准使用 Claude，所以答唔到。', rate_limited: '問得太密，等一陣再試。',
+    prompt_too_large: '資料太多，試下揀細啲嘅時間範圍再問。', sampling_disabled: '呢個帳戶用唔到 AI 問答。'};
+  async function ask(question) {
+    if (!question.trim()) return;
+    const ops = inWin();
+    const lines = ops.map(o => `${new Date(o.ts).toISOString().slice(0, 10)} @${o.handle}(${name(o.handle)}) ${o.ticker} ${LABEL[o.stance]}${o.stance !== 'neutral' ? '強度' + o.strength : ''}：${o.summary}`);
+    const cg = board(ops).slice(0, 25).map(r => `${r.tk}: ${r.label}（睇好${r.bull} 中性${r.neu} 睇淡${r.bear}）${D.congress[r.tk] ? ` 國會近90日 買${D.congress[r.tk].b} 賣${D.congress[r.tk].s}` : ''}`);
+    const prompt = `你係一個整理 X（Twitter）交易員觀點嘅助手。只可以根據下面資料答，資料冇講嘅就直接話冇資料。
+用廣東話、簡潔答。提到觀點時註明係邊個帳號、幾時講。唔好畀任何買賣建議、目標價或者「值得買」之類評價。
+
+時間範圍：最近 ${W} 日（截至 ${D.generated.slice(0, 10)}）
+
+【共識榜】
+${cg.join('\n') || '（冇）'}
+
+【逐條立場】
+${lines.join('\n') || '（冇）'}
+
+問題：${question}`;
+    ctl = new AbortController();
+    go.disabled = true; stop.hidden = false; out.textContent = '諗緊…';
+    try {
+      await sample(prompt, {signal: ctl.signal, onText: ({text}) => { out.textContent = text; }});
+    } catch (e) {
+      out.textContent = e.text || '';
+      if (e.code !== 'cancelled') out.textContent += (out.textContent ? '\n\n' : '') + (COPY[e.code] || '暫時答唔到，稍後再試。');
+      if (e.code === 'not_granted' || e.code === 'sampling_disabled') blocked = true;
+    } finally {
+      go.disabled = blocked; stop.hidden = true;
+    }
+  }
+  go.onclick = () => ask(q.value);
+  stop.onclick = () => ctl?.abort();
+  q.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) ask(q.value); });
+  document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { q.value = b.dataset.q; ask(b.dataset.q); });
+})();
+})();
+</script>
+
+</body>
+</html>
